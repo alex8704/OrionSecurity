@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<util:list id="application.mvp.viewProvider.viewsPackages">
+		<value>co.com.binariasystems.orion.web.view</value>
+		<value>co.com.binariasystems.orion.web.controller</value>
+	</util:list>
+
+	<bean id="defaultViewInstanceCreator" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.DefaultViewInstanceCreator">
+		<constructor-arg>
+			<bean class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.IOCBasedControllerInstantiator"/>
+		</constructor-arg>
+	</bean>
+
+	<bean id="entityCRUDViewInstanceCreator" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.EntityCRUDViewInstanceCreator"></bean>
+
+	<bean id="viewProvider" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.DefaultViewProvider" init-method="configure">
+		<property name="viewInstanceCreators">
+			<list value-type="co.com.binariasystems.fmw.vweb.mvp.dispatcher.ViewInstanceCreator">
+				<ref bean="defaultViewInstanceCreator" />
+				<ref bean="entityCRUDViewInstanceCreator" />
+			</list>
+		</property>
+		<property name="viewsPackages" ref="application.mvp.viewProvider.viewsPackages" />
+		<property name="showConfigurationDebugInfo" value="true" />
+	</bean>
+	
+	<bean id="securityManagerDAO" class="co.com.binariasystems.fmw.security.dao.ShiroBasedSecurityManagerDAO">
+		<property name="supportAtmosphereWebSockets" value="true"/>
+	</bean>
+
+	<bean id="securityManager" class="co.com.binariasystems.fmw.vweb.mvp.security.MVPBasedSecurityManagerImpl">
+		<property name="viewProvider" ref="viewProvider" />
+		<property name="dao" ref="securityManagerDAO"/>
+	</bean>
+
+	<bean id="dispatchEventInterceptor" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.DispatchEventInterceptor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+	<bean id="uriFragmentChangeListener" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.MVPURIFragmentChangeListener" scope="session">
+		<aop:scoped-proxy />
+		<property name="viewDispatcher">
+			<bean class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.ViewDispatcherImpl">
+				<property name="viewProvider" ref="viewProvider" />
+				<property name="eventBus">
+					<bean class="co.com.binariasystems.fmw.vweb.mvp.eventbus.EventBusImpl" />
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<aop:config>
+		<aop:aspect ref="dispatchEventInterceptor">
+			<aop:pointcut expression="execution(* co.com.binariasystems.fmw.vweb.mvp.dispatcher.ViewDispatcher.dispatch(*))" id="dispatchEventExecution" />
+			<aop:around method="intercept" pointcut-ref="dispatchEventExecution" />
+		</aop:aspect>
+	</aop:config>
+</beans>

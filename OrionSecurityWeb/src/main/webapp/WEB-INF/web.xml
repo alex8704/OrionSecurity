@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
+	<display-name>OrionSecurityWeb</display-name>
+
+	<!--******************************************************************************************************************************** 
+		Parametros de Contexto ******************************************************************************************************************************** -->
+	<context-param>
+		<description>Version Actual de la Aplicacion</description>
+		<param-name>Orion.applicationVersion</param-name>
+		<param-value>1.0</param-value>
+	</context-param>
+	<context-param>
+		<description>Archivo de Configurcacion de Spring Framework</description>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/config/spring/application-context.xml</param-value>
+	</context-param>
+	<context-param>
+		<description>Clase de Inicializacion del Enterno Shiro</description>
+		<param-name>shiroEnvironmentClass</param-name>
+		<param-value>co.com.binariasystems.fmw.vweb.util.shiro.ShiroIniWebEnvironment</param-value>
+	</context-param>
+	<context-param>
+		<description>Ubicacion Archivo de Configuracion de Shiro</description>
+		<param-name>shiroConfigLocations</param-name>
+		<param-value>/WEB-INF/config/shiro/shiro.ini</param-value>
+	</context-param>
+	<context-param>
+		<description>Indica si se debe crear automaticamente el modelo de datos si no existe</description>
+		<param-name>GestPymeSOCContextListener.createDataModelIfNotExist</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>productionMode</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<!--******************************************************************************************************************************** 
+		Listeners de la Aplicacion ******************************************************************************************************************************** -->
+	<!-- <listener> <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class> 
+		</listener> -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>co.com.binariasystems.orion.web.servlet.OrionContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+	</listener>
+
+	<!--******************************************************************************************************************************** 
+		Filtros y Servlets de la Aplicacion ******************************************************************************************************************************** -->
+	<!-- <filter> <filter-name>log4jServletFilter</filter-name> <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class> 
+		<async-supported>true</async-supported> </filter> -->
+	<filter>
+		<filter-name>shiro-security-filter</filter-name>
+		<filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+		<async-supported>true</async-supported>
+		<init-param>
+			<param-name>staticSecurityManagerEnabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<!--******************************************************************************************************************************** 
+		Mappings de Servlets y Filtros de la Aplicacion ******************************************************************************************************************************** -->
+	<!-- <filter-mapping> <filter-name>log4jServletFilter</filter-name> <url-pattern>/*</url-pattern> 
+		</filter-mapping> -->
+	<filter-mapping>
+		<filter-name>shiro-security-filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!--******************************************************************************************************************************** 
+		Otros Parametros ******************************************************************************************************************************** -->
+	<session-config>
+		<session-timeout>15</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>
