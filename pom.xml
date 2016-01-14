@@ -13,13 +13,12 @@
 		<project.target.version>1.7</project.target.version>
 		<project.encoding>UTF-8</project.encoding>
 		<servlet.api.version>3.0.1</servlet.api.version>
-		<springplatform.version>1.1.4.RELEASE</springplatform.version>
+		<springplatform.version>2.0.1.RELEASE</springplatform.version>
 		<shiro.version>1.2.4</shiro.version>
 		<javamail.version>1.4.7</javamail.version>
 		<javaee.version>6.0</javaee.version>
 		<reflections.version>0.9.10</reflections.version>
 		<retrofit.version>2.0.0-beta3</retrofit.version>
-		<flyway.version>3.2.1</flyway.version>
 		<application.widgetset>co.com.binariasystems.orion.web.gwt.widgetset.OrionWidgetset</application.widgetset>
 		<application.basepackage>co/com/binariasystems/orion</application.basepackage>
 		<webModule.themename>binaria</webModule.themename>

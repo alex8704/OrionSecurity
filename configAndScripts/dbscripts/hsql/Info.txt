@@ -1,0 +1,1 @@
+Directorio para distribuir scripts por fuera de la app, para cassos en que la instalacion deba hacerse manualmente

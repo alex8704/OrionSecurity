@@ -11,8 +11,4 @@ import co.com.binariasystems.orion.business.dao.OrionSystemDAO;
 public class OrionSystemBean {
 	@Autowired
 	private OrionSystemDAO dao;
-	
-	public boolean validateDataModelCreation(boolean createIfNotExist){
-		return dao.validateDataModelCreation(createIfNotExist);
-	}
 }

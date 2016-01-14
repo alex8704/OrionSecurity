@@ -49,7 +49,22 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
+	<bean id="databaseMigrator" class="co.com.binariasystems.fmw.util.db.DatabaseMigrator" init-method="executeDatabaseMigration">
+		<property name="dataSource" ref="${entityManagerFactory.dataSourceName}"/>
+		<property name="loaderClass" ref="application.default.resorceLoaderClass"/>
+		<property name="properties">
+			<util:properties location="classpath:configuration.properties"/>
+		</property>
+	</bean>
 	
+<!-- 	<bean id="dataModelInstaller" class="co.com.binariasystems.fmw.util.db.DataModelInstaller" init-method="validateDataModelCreation"> -->
+<!-- 		<property name="createIfNotExist" value="true"/> -->
+<!-- 		<property name="dataSource" ref="${entityManagerFactory.dataSourceName}"/> -->
+<!-- 		<property name="loaderClass" ref="application.default.resorceLoaderClass"/> -->
+<!-- 		<property name="configProperties"> -->
+<!-- 			<util:properties location="classpath:configuration.properties"/> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 	<!-- **********************************************************************************************************
 									JAVA PERSISTECE CONFIGURATIONS
 	 ********************************************************************************************************** -->
