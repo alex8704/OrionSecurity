@@ -1,7 +1,7 @@
 package co.com.binariasystems.orion.business.entity;
 
 import java.io.Serializable;
-import java.security.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -33,10 +33,10 @@ public class SegtAccessToken implements Serializable {
 	@NotNull
     @Column(name = "FEC_CREACION")
     @Temporal(TemporalType.TIMESTAMP)
-	private Timestamp creationDate;
+	private Date creationDate;
     @Column(name = "FEC_EXPIRACION")
     @Temporal(TemporalType.TIMESTAMP)
-	private Timestamp expirationDate;
+	private Date expirationDate;
 	@Size(max = 1)
     @Enumerated(EnumType.STRING)
     @Column(name = "ES_VIGENTE")
@@ -75,25 +75,25 @@ public class SegtAccessToken implements Serializable {
 	/**
 	 * @return the creationDate
 	 */
-	public Timestamp getCreationDate() {
+	public Date getCreationDate() {
 		return creationDate;
 	}
 	/**
 	 * @param creationDate the creationDate to set
 	 */
-	public void setCreationDate(Timestamp creationDate) {
+	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
 	/**
 	 * @return the expirationDate
 	 */
-	public Timestamp getExpirationDate() {
+	public Date getExpirationDate() {
 		return expirationDate;
 	}
 	/**
 	 * @param expirationDate the expirationDate to set
 	 */
-	public void setExpirationDate(Timestamp expirationDate) {
+	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
 	}
 	/**

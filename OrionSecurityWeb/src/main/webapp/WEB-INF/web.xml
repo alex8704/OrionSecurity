@@ -8,11 +8,6 @@
 	<!--******************************************************************************************************************************** 
 		Parametros de Contexto ******************************************************************************************************************************** -->
 	<context-param>
-		<description>Version Actual de la Aplicacion</description>
-		<param-name>Orion.applicationVersion</param-name>
-		<param-value>1.0</param-value>
-	</context-param>
-	<context-param>
 		<description>Archivo de Configurcacion de Spring Framework</description>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/config/spring/application-context.xml</param-value>
@@ -29,7 +24,7 @@
 	</context-param>
 	<context-param>
 		<description>Indica si se debe crear automaticamente el modelo de datos si no existe</description>
-		<param-name>GestPymeSOCContextListener.createDataModelIfNotExist</param-name>
+		<param-name>OrionContextListener.createDataModelIfNotExist</param-name>
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>

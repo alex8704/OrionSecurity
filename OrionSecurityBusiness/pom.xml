@@ -41,7 +41,13 @@
 			<version>${retrofit.version}</version>
 			<scope>compile</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>${flyway.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>co.com.binariasystems</groupId>
 			<artifactId>binaria-fmw</artifactId>

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.annotation.PostConstruct;
 
+import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import co.com.binariasystems.fmw.dataaccess.db.FMWAbstractDAO;
 import co.com.binariasystems.fmw.util.db.DBUtil;
 import co.com.binariasystems.orion.business.resources.resources;
+import co.com.binariasystems.orion.business.utils.OrionBusinessUtils;
 
 @Repository
 public class OrionSystemDAO extends FMWAbstractDAO{
@@ -44,7 +46,7 @@ public class OrionSystemDAO extends FMWAbstractDAO{
 		
 		dbValidationCallback = new RowCallbackHandler() {
 			@Override public void processRow(ResultSet rs) throws SQLException {
-				LOGGER.info("GestPymeSOC DataBase Validation Sucessfull finished. Dummy Value: '{}'", rs.getString(1));
+				LOGGER.info("{} DataBase Validation Sucessfull finished. Dummy Value: '{}'", OrionBusinessUtils.getApplicationName(), rs.getString(1));
 			}
 		};
 	}
@@ -53,7 +55,7 @@ public class OrionSystemDAO extends FMWAbstractDAO{
 		if(!isDataModelAlreadyCreated()){
 			if(!createIfNotExist) return false;
 			if(!runDBTablesCreationScript()) return false;
-			if(runDBConstraintsCreationScript()) return false;
+			if(!runDBConstraintsCreationScript()) return false;
 			runDBSeedInsertionScript();
 		}
 		return true;
@@ -97,8 +99,9 @@ public class OrionSystemDAO extends FMWAbstractDAO{
 	private boolean runSingleScript(Resource scriptResource){
 		try {
 			ScriptUtils.executeSqlScript(getDataSource().getConnection(), scriptResource);
+			LOGGER.info("Sucessful script '"+scriptResource.getFilename()+"' execution");
 		} catch (ScriptException | SQLException e) {
-			LOGGER.error("Has ocurreed an unexpected error while trying run script file '"+scriptResource.getFilename()+"'.", e);
+			LOGGER.error("Has ocurred an unexpected error while trying run script file '"+scriptResource.getFilename()+"'.", e);
 			return false;
 		}
 		return true;

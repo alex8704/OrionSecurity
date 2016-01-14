@@ -19,6 +19,7 @@
 		<javaee.version>6.0</javaee.version>
 		<reflections.version>0.9.10</reflections.version>
 		<retrofit.version>2.0.0-beta3</retrofit.version>
+		<flyway.version>3.2.1</flyway.version>
 		<application.widgetset>co.com.binariasystems.orion.web.gwt.widgetset.OrionWidgetset</application.widgetset>
 		<application.basepackage>co/com/binariasystems/orion</application.basepackage>
 		<webModule.themename>binaria</webModule.themename>

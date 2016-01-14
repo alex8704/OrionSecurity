@@ -14,12 +14,11 @@ import co.com.binariasystems.fmw.entity.util.FMWEntityConstants;
 import co.com.binariasystems.fmw.ioc.IOCHelper;
 import co.com.binariasystems.fmw.util.db.DBUtil;
 import co.com.binariasystems.fmw.util.di.SpringIOCProvider;
-import co.com.binariasystems.fmw.util.messagebundle.MessageBundleManager;
+import co.com.binariasystems.fmw.util.messagebundle.PropertiesManager;
 import co.com.binariasystems.fmw.vweb.constants.VWebCommonConstants;
 import co.com.binariasystems.orion.business.bean.OrionSystemBean;
 import co.com.binariasystems.orion.business.utils.OrionBusinessConstants;
 import co.com.binariasystems.orion.business.utils.OrionBusinessUtils;
-import co.com.binariasystems.orion.web.resources.resources;
 import co.com.binariasystems.orion.web.utils.OrionWebConstants;
 
 /**
@@ -35,13 +34,13 @@ public class OrionContextListener implements ServletContextListener, OrionWebCon
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
     public void contextInitialized(ServletContextEvent sce)  {
-    	MessageBundleManager messages = MessageBundleManager.forPath(resources.getMessageFilePath(MAIN_MESSAGES_FILE));
-    	String appVersion = sce.getServletContext().getInitParameter(OrionBusinessConstants.APPLICATION_VERSION_PROPERTY);
-    	System.setProperty(OrionBusinessConstants.APPLICATION_VERSION_PROPERTY, appVersion);
-    	System.setProperty(OrionBusinessConstants.APPLICATION_NAME_PROPERTY, messages.getString(OrionBusinessConstants.APPLICATION_NAME_PROPERTY));
+    	PropertiesManager properties = PropertiesManager.forPath("/configuration.properties");
+    	System.setProperty(OrionBusinessConstants.APPLICATION_VERSION_PROPERTY, properties.getString(OrionBusinessConstants.APPLICATION_VERSION_PROPERTY));
+    	System.setProperty(OrionBusinessConstants.APPLICATION_NAME_PROPERTY, properties.getString(OrionBusinessConstants.APPLICATION_NAME_PROPERTY));
+    	System.setProperty(OrionBusinessConstants.MAIN_DATASOURCE_PROPERTY, properties.getString(OrionBusinessConstants.MAIN_DATASOURCE_PROPERTY));
     	
     	IOCHelper.setProvider(SpringIOCProvider.configure(WebApplicationContextUtils.getRequiredWebApplicationContext(sce.getServletContext())));
-    	DBUtil.init(IOCHelper.getBean("OrionSecurityDS", DataSource.class));
+    	DBUtil.init(IOCHelper.getBean(OrionBusinessUtils.getMainDataSourceName(), DataSource.class));
     	Class resourceLoaderClass = IOCHelper.getBean(FMWConstants.APPLICATION_DEFAULT_CLASS_FOR_RESOURCE_LOAD_IOC_KEY, Class.class);
     	String entitiesStringsFilePath = IOCHelper.getBean(VWebCommonConstants.APP_ENTITIES_MESSAGES_FILE_IOC_KEY, String.class);
     	String entityOperatiosShowSql = IOCHelper.getBean(FMWEntityConstants.ENTITY_OPERATIONS_SHOWSQL_IOC_KEY, String.class);
