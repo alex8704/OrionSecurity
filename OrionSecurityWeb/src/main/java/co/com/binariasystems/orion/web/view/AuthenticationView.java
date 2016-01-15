@@ -33,7 +33,7 @@ import com.vaadin.ui.VerticalLayout;
 @Root
 @View(url="/", messages=AuthenticationView.MESSAGES_BUNDLE, controller=AuthenticationViewController.class, viewStringsByConventions= true)
 public class AuthenticationView extends AbstractView implements UIConstants, OrionWebConstants {
-	public static final String		MESSAGES_BUNDLE = OrionWebConstants.MESSAGES_PACKAGE + "" + MAIN_MESSAGES_FILE;
+	public static final String		MESSAGES_BUNDLE = OrionWebConstants.MESSAGES_PACKAGE + "." + MAIN_MESSAGES_FILE;
 	private VerticalLayout 				mainContainer;
 	private FormPanel					loginForm;
 	private Image						applicationLogo;

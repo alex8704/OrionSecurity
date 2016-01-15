@@ -38,17 +38,14 @@
 		factory-method="forName">
 		<constructor-arg value="${application.resourceLoaderClass}" />
 	</bean>
-	
-	<bean id="OrionSecurityDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${jdbc.driverClassName}"/>
-		<property name="url" value="${jdbc.url}"/>
-		<property name="username" value="${jdbc.user}"/>
-		<property name="password" value="${jdbc.pass}"/>
-	</bean>
-	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="${entityManagerFactory.dataSourceName}"/>
-	</bean>
+
+	<jee:jndi-lookup id="OrionSecurityDS" jndi-name="java:/jdbc/OrionSecurity_DS" resource-ref="true"></jee:jndi-lookup>
+	<jee:jndi-lookup id="SecurityDS" jndi-name="java:/jdbc/WebtestMainDS" resource-ref="true"></jee:jndi-lookup>
+
+	<tx:jta-transaction-manager />
+	<!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> -->
+	<!-- <property name="dataSource" ref="siamsDS"/> -->
+	<!-- </bean> -->
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	

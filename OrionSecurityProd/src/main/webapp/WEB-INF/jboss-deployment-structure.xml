@@ -13,8 +13,5 @@
             <module name="org.jboss.logmanager"/>
             <module name="org.jboss.log4j.logmanager"/>
         </exclusions>
-        <dependencies>
-        	<module name="deployment.hsqldb.jar" export="true" />
-        </dependencies>
     </deployment>
 </jboss-deployment-structure>

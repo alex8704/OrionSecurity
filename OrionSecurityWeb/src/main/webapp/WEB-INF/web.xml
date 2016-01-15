@@ -28,14 +28,22 @@
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
+		<param-name>hsqlRunner.serverConfigFile</param-name>
+		<param-value>/co/com/binariasystems/orion/web/resources/properties/hsqlServerConfig.properties</param-value>
+	</context-param>
+	<context-param>
 		<param-name>productionMode</param-name>
 		<param-value>false</param-value>
 	</context-param>
 
 	<!--******************************************************************************************************************************** 
 		Listeners de la Aplicacion ******************************************************************************************************************************** -->
-	<!-- <listener> <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class> 
-		</listener> -->
+	<listener>
+		<listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>co.com.binariasystems.fmw.vweb.servlet.HSQLSeverRunListener</listener-class>
+	</listener>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
