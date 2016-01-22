@@ -202,14 +202,37 @@
 		</dependency>
 		<!-- ******************************************* Spring, Vaadin and Shiro 
 			Dependencies END ******************************************* -->
-
 		<dependency>
-			<groupId>com.squareup.retrofit2</groupId>
-			<artifactId>retrofit</artifactId>
-			<version>${retrofit.version}</version>
+			<groupId>co.com.binariasystems</groupId>
+			<artifactId>OrionSecurityModel</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>co.com.binariasystems</groupId>
+			<artifactId>binaria-fmw</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>co.com.binariasystems</groupId>
+			<artifactId>binaria-fmw-util</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>co.com.binariasystems</groupId>
+			<artifactId>binaria-fmw-business</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>co.com.binariasystems</groupId>
+			<artifactId>binaria-fmw-security</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>

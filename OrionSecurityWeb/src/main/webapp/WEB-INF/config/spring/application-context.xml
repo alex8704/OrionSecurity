@@ -34,8 +34,7 @@
 		<constructor-arg value="${entities_strings.filePath}" />
 	</bean>
 
-	<bean id="application.default.resorceLoaderClass" class="java.lang.Class"
-		factory-method="forName">
+	<bean id="application.default.resorceLoaderClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="${application.resourceLoaderClass}" />
 	</bean>
 	
@@ -45,12 +44,7 @@
 		<property name="username" value="${jdbc.user}"/>
 		<property name="password" value="${jdbc.pass}"/>
 	</bean>
-	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="${entityManagerFactory.dataSourceName}"/>
-	</bean>
 
-	<tx:annotation-driven transaction-manager="transactionManager" />
 	
 	<bean id="databaseMigrator" class="co.com.binariasystems.fmw.util.db.DatabaseMigrator" init-method="executeDatabaseMigration">
 		<property name="dataSource" ref="${entityManagerFactory.dataSourceName}"/>
@@ -89,6 +83,12 @@
 		</property>
 	</bean>
 	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager" />
+	
 	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 		<property name="database" value="${databaseSystem}" />
 		<property name="showSql" value="${jpaImpl.show_sql}"/>
@@ -103,7 +103,7 @@
 	
 	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 	
-	<jpa:repositories base-package="co.com.binariasystems.orion.business.dao"/>
+	<jpa:repositories base-package="co.com.binariasystems.orion.business.dao" named-queries-location="${repositoryCfg.named_queries_location}"/>
 	
 	<!-- **********************************************************************************************************
 									JAVAMAIL-VELOCITY MECHANISM CONFIGURATION

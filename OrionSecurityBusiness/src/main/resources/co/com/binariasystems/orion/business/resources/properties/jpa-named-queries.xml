@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>Named Queries de los Diferentes DAO's</comment>
+	<entry key="SegtUser.buscarPrimeroPorAlias">select t from SegtUser t where t.loginAlias = ?1</entry>
+</properties>

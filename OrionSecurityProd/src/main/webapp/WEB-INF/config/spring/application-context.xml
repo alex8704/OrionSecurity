@@ -100,7 +100,7 @@
 	
 	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 	
-	<jpa:repositories base-package="co.com.binariasystems.orion.business.dao"/>
+	<jpa:repositories base-package="co.com.binariasystems.orion.business.dao" named-queries-location="${repositoryCfg.named_queries_location}"/>
 	
 	<!-- **********************************************************************************************************
 									JAVAMAIL-VELOCITY MECHANISM CONFIGURATION

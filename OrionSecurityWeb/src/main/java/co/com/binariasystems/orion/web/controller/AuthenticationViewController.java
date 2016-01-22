@@ -15,7 +15,7 @@ import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.PasswordFieldBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.TextFieldBuilder;
-import co.com.binariasystems.orion.business.dto.AuthenticationDTO;
+import co.com.binariasystems.orion.model.dto.AuthenticationDTO;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
