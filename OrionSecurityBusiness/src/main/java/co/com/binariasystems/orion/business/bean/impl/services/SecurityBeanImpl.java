@@ -1,6 +1,7 @@
 package co.com.binariasystems.orion.business.bean.impl.services;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,6 +165,12 @@ public class SecurityBeanImpl implements SecurityBean {
 	
 	public List<ResourceDTO> findRoleResources(RoleDTO role){
 		List<SegtResource> resources = resourceDAO.findByAuthorizedRolesAndApplication(new SegtRole(role.getRolId()), new SegtApplication(role.getApplication().getApplicationId()));
+		return ObjectUtils.transferPropertiesListRecursive(resources, ResourceDTO.class);
+	}
+	
+	public List<ResourceDTO> findUserResources(Integer userId, Integer applicationId){
+		List<SegtRole> roles = roleDAO.findByAssignedUsersAndApplication(new SegtUser(userId), new SegtApplication(applicationId));
+		List<SegtResource> resources = roles.isEmpty() ? new LinkedList<SegtResource>() :resourceDAO.findByAuthorizedRolesListAndApplication(roles, new SegtApplication(applicationId));
 		return ObjectUtils.transferPropertiesListRecursive(resources, ResourceDTO.class);
 	}
 }

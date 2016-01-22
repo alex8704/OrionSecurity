@@ -3,4 +3,9 @@
 <properties>
 	<comment>Named Queries de los Diferentes DAO's</comment>
 	<entry key="SegtUser.buscarPrimeroPorAlias">select t from SegtUser t where t.loginAlias = ?1</entry>
+	<entry key="SegtResource.findByAuthorizedRolesListAndApplication">
+		select rec from SegtResource rec join rec.authorizedRoles rol 
+		where rol in(?1) and rec.application = ?2
+		order by rec.module asc, rec.resourceId asc
+	</entry>
 </properties>

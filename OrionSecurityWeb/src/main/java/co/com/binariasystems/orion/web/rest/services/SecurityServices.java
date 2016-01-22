@@ -84,4 +84,11 @@ public class SecurityServices {
 	public List<ResourceDTO> findRoleResources(RoleDTO role){
 		return bean.findRoleResources(role);
 	}
+	
+	@Path("userresources")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<ResourceDTO> findUserResources(@QueryParam("user") Integer userId, @QueryParam("application") Integer applicationId){
+		return bean.findUserResources(userId, applicationId);
+	}
 }

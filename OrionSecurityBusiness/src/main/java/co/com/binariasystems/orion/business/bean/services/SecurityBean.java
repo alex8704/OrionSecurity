@@ -27,4 +27,6 @@ public interface SecurityBean {
 	
 	public List<ResourceDTO> findRoleResources(RoleDTO role);
 	
+	public List<ResourceDTO> findUserResources(Integer userId, Integer applicationId);
+	
 }
