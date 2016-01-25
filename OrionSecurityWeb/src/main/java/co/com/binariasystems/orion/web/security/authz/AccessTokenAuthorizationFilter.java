@@ -25,20 +25,28 @@ public class AccessTokenAuthorizationFilter extends AuthorizationFilter{
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		HttpServletResponse httpResponse = (HttpServletResponse)response;
 		
-		String firstAuhtHeader = httpRequest.getHeader(FIRST_AUTHENTICATION_HEADER);
 		AccessTokenDTO accessTokenDTO = (AccessTokenDTO)SecurityUtils.getSubject().getPrincipal();
-		if(Boolean.TRUE.toString().equals(firstAuhtHeader)){
+		if(httpRequest.getSession().isNew()){
 			httpResponse.setHeader(tokenHeaderName, accessTokenDTO.getTokenString());
 			return true;
 		}
 		
 		String accessToken = httpRequest.getHeader(tokenHeaderName);
-		AccessTokenDTO validateAccessToken = new AccessTokenDTO();
-		validateAccessToken.setApplication(accessTokenDTO.getApplication());
-		validateAccessToken.setUser(accessTokenDTO.getUser());
-		validateAccessToken.setTokenString(accessToken);
 		
-		return getSecurityBean().validateAccessTokenValidity(validateAccessToken).booleanValue();
+		return accessTokenDTO.getTokenString().equals(accessToken);
+		
+		/**
+		 * Cometado por consideraciones de performance, provisoriamente se hara la validacion
+		 * contra las credenciales obtenidas del Subject de Shiro, y si luego de estudiar las implicaciones
+		 * se considera mas seguro hacerlo contra la BB.DD se habilitara el codigo comentado
+		 */
+//		AccessTokenDTO validateAccessToken = new AccessTokenDTO();
+//		validateAccessToken.setApplication(accessTokenDTO.getApplication());
+//		validateAccessToken.setUser(accessTokenDTO.getUser());
+//		validateAccessToken.setTokenString(accessToken);
+//		
+//		return getSecurityBean().validateAccessTokenValidity(validateAccessToken).booleanValue();
+		
 	}
 
 	/**

@@ -84,6 +84,7 @@ public class SecurityBeanImpl implements SecurityBean {
 		accessToken.setUser(user);
 		accessToken.setTokenString(AccessTokenHelper.generateRandomTokenStr());
 		
+		user.setLastAccessIP(authentication.getNetAddress());
 		user.setLastAccessDate(new Date());
 		user.setFailedRetries(0);
 		user.setIsBlockedByMaxRetries(SN2Boolean.N);
@@ -96,13 +97,9 @@ public class SecurityBeanImpl implements SecurityBean {
 	}
 	
 	@Transactional
-	public void invalidateUserSession(AuthenticationDTO authentication){
-		SegtUser user = userDAO.findFirstByLoginAlias(authentication.getUsername());
-		SegtApplication application = applicationDAO.findByApplicationCode(Application.valueOf(authentication.getApplicationCode()));
-		SegtAccessToken accessToken = accessTokenDAO.findOne(new SegtAccessTokenPK(user.getUserId(), application.getApplicationId()));
-		boolean hasActiveSession = accessToken  != null && accessToken.getIsActive().booleanValue();
-		if(!hasActiveSession) return;
-		
+	public void invalidateUserSession(AccessTokenDTO accessTokenDTO){
+		SegtAccessToken accessToken = ObjectUtils.transferPropertiesRecursive(accessTokenDTO, SegtAccessToken.class);
+		accessToken.setId(new SegtAccessTokenPK(accessToken.getUser().getUserId(), accessToken.getApplication().getApplicationId()));
 		accessToken.setExpirationDate(new Date());
 		accessToken.setIsActive(SN2Boolean.N);
 		
@@ -157,9 +154,9 @@ public class SecurityBeanImpl implements SecurityBean {
 			throw new SecurityServicesException(SecurityExceptionType.ACCOUNT_BLOCKED, "Account is locked");
 	}
 	
-	public List<RoleDTO> findUserRoles(AuthenticationDTO authentication){
-		SegtUser user = userDAO.findFirstByLoginAlias(authentication.getUsername());
-		SegtApplication application = applicationDAO.findByApplicationCode(Application.valueOf(authentication.getApplicationCode()));
+	public List<RoleDTO> findUserRoles(AccessTokenDTO accessTokenDTO){
+		SegtUser user = ObjectUtils.transferPropertiesRecursive(accessTokenDTO.getUser(), SegtUser.class);
+		SegtApplication application = ObjectUtils.transferPropertiesRecursive(accessTokenDTO.getApplication(), SegtApplication.class);
 		return ObjectUtils.transferPropertiesListRecursive(roleDAO.findByAssignedUsersAndApplication(user, application), RoleDTO.class);
 	}
 	
@@ -168,9 +165,11 @@ public class SecurityBeanImpl implements SecurityBean {
 		return ObjectUtils.transferPropertiesListRecursive(resources, ResourceDTO.class);
 	}
 	
-	public List<ResourceDTO> findUserResources(Integer userId, Integer applicationId){
-		List<SegtRole> roles = roleDAO.findByAssignedUsersAndApplication(new SegtUser(userId), new SegtApplication(applicationId));
-		List<SegtResource> resources = roles.isEmpty() ? new LinkedList<SegtResource>() :resourceDAO.findByAuthorizedRolesListAndApplication(roles, new SegtApplication(applicationId));
+	public List<ResourceDTO> findUserResources(AccessTokenDTO accessTokenDTO){
+		SegtUser user = ObjectUtils.transferPropertiesRecursive(accessTokenDTO.getUser(), SegtUser.class);
+		SegtApplication application = ObjectUtils.transferPropertiesRecursive(accessTokenDTO.getApplication(), SegtApplication.class);
+		List<SegtRole> roles = roleDAO.findByAssignedUsersAndApplication(user, application);
+		List<SegtResource> resources = roles.isEmpty() ? new LinkedList<SegtResource>() :resourceDAO.findByAuthorizedRolesListAndApplication(roles, application);
 		return ObjectUtils.transferPropertiesListRecursive(resources, ResourceDTO.class);
 	}
 }

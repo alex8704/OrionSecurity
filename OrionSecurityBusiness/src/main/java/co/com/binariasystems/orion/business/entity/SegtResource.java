@@ -64,6 +64,8 @@ public class SegtResource implements Serializable {
     @JoinColumn(name = "ID_APLICACION", referencedColumnName = "ID_APLICACION")
     @ManyToOne(optional = false)
     private SegtApplication application;
+    @Column(name = "POSICION")
+    private Integer index;
     
     public SegtResource() {}
 
@@ -164,6 +166,20 @@ public class SegtResource implements Serializable {
     public void setApplication(SegtApplication application) {
         this.application = application;
     }
+    
+    /**
+	 * @return the index
+	 */
+	public Integer getIndex() {
+		return index;
+	}
+
+	/**
+	 * @param index the index to set
+	 */
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

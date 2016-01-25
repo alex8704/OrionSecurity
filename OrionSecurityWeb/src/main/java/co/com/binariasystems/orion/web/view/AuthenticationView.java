@@ -19,9 +19,8 @@ import co.com.binariasystems.orion.web.controller.AuthenticationViewController;
 import co.com.binariasystems.orion.web.resources.resources;
 import co.com.binariasystems.orion.web.utils.OrionWebConstants;
 
-import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.server.ClassResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
@@ -47,9 +46,9 @@ public class AuthenticationView extends AbstractView implements UIConstants, Ori
 	@PropertyId("rememberMe")
 	private CheckBox					rememberMeChk;
 	private ButtonBuilder				authenticateBtn;
-	private BeanItem<AuthenticationDTO>	dataSource;
-	private FieldGroup fieldGroup;
+	private BeanFieldGroup<AuthenticationDTO> fieldGroup;
 	private Dimension loginPanelWidth = Dimension.pixels(300);
+	private AuthenticationDTO			authenticationDTO;
 	
 	
 	@ViewBuild
@@ -63,8 +62,9 @@ public class AuthenticationView extends AbstractView implements UIConstants, Ori
 		passwordTxt = new PasswordFieldBuilder();
 		rememberMeChk = new CheckBox();
 		authenticateBtn = new ButtonBuilder();
-		dataSource = new BeanItem<AuthenticationDTO>(new AuthenticationDTO(), AuthenticationDTO.class);
-		fieldGroup = new FieldGroup(dataSource);
+		authenticationDTO = new AuthenticationDTO();
+		fieldGroup = new BeanFieldGroup<AuthenticationDTO>(AuthenticationDTO.class);
+		fieldGroup.setItemDataSource(authenticationDTO);
 		
 		//Customizacion y ubicacion de los componentes de la vista
 		fieldGroup.setBuffered(false);

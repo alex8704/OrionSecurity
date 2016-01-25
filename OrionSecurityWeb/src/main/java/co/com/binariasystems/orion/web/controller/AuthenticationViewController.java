@@ -2,7 +2,11 @@ package co.com.binariasystems.orion.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import co.com.binariasystems.fmw.security.FMWSecurityException;
+import co.com.binariasystems.fmw.security.mgt.SecurityManager;
+import co.com.binariasystems.fmw.security.model.AuthenticationRequest;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.Init;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController.OnLoad;
@@ -17,46 +21,80 @@ import co.com.binariasystems.fmw.vweb.uicomponet.builders.PasswordFieldBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.TextFieldBuilder;
 import co.com.binariasystems.orion.model.dto.AuthenticationDTO;
 
-import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.server.Page;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServletRequest;
+import com.vaadin.server.WebBrowser;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.UI;
 
 @ViewController
-public class AuthenticationViewController extends AbstractViewController implements ClickListener {
-private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationViewController.class);
-	
-	@ViewField private TextFieldBuilder					usernameTxt;
-	@ViewField private PasswordFieldBuilder				passwordTxt;
-	@ViewField private CheckBox							rememberMeChk;
-	@ViewField private ButtonBuilder					authenticateBtn;
-	@ViewField private BeanItem<AuthenticationDTO> 		dataSource;
-	@ViewField private FieldGroup 						fieldGroup;
-	@ViewField private FormPanel						loginForm;
-	
+public class AuthenticationViewController extends AbstractViewController{
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationViewController.class);
+
+	@ViewField
+	private TextFieldBuilder usernameTxt;
+	@ViewField
+	private PasswordFieldBuilder passwordTxt;
+	@ViewField
+	private CheckBox rememberMeChk;
+	@ViewField
+	private ButtonBuilder authenticateBtn;
+	@ViewField
+	private BeanFieldGroup<AuthenticationDTO> fieldGroup;
+	@ViewField
+	private AuthenticationDTO authenticationDTO;
+	@ViewField
+	private FormPanel loginForm;
+	@Autowired
+	private SecurityManager securityManager;
+	private AuthentiationViewClickListener clickListener;
+
 	@Init
-	public void init(){
-		authenticateBtn.addClickListener(this);
-	}
-	
-	@OnLoad
-	public void onLoadController(){
-	}
-	
-	@OnUnLoad
-	public void onUnloadController(){
-		for(Object propertyId : dataSource.getItemPropertyIds())
-			dataSource.getItemProperty(propertyId).setValue(null);
+	public void init() {
+		clickListener = new AuthentiationViewClickListener();
+		authenticateBtn.addClickListener(clickListener);
 	}
 
-	@Override
-	public void buttonClick(ClickEvent event) {
-		try {
-			loginForm.validate();
-			LOGGER.info("Autenticando: [username:{}, password:{}, rememberMe:{}]", dataSource.getBean().getUsername(), dataSource.getBean().getPassword(), dataSource.getBean().getRememberMe());
-		} catch (FormValidationException ex) {
-			MessageDialog.showExceptions(ex, LOGGER);
+	@OnLoad
+	public void onLoadController() {
+	}
+
+	@OnUnLoad
+	public void onUnloadController() {
+		for (Object propertyId : fieldGroup.getBoundPropertyIds())
+			fieldGroup.getItemDataSource().getItemProperty(propertyId).setValue(null);
+	}
+
+	private VaadinServletRequest getVaadinRequest() {
+		return (VaadinServletRequest) VaadinService.getCurrentRequest();
+	}
+
+	public void loginButtonClick() throws FormValidationException, FMWSecurityException {
+		loginForm.validate();
+		WebBrowser browser = Page.getCurrent().getWebBrowser();
+		AuthenticationRequest authRequest = new AuthenticationRequest();
+		authRequest.setUsername(authenticationDTO.getUsername());
+		authRequest.setPassword(authenticationDTO.getPassword());
+		authRequest.setRememberMe(authenticationDTO.getRememberMe());
+		authRequest.setHttpRequest(getVaadinRequest().getHttpServletRequest());
+		authRequest.setHost(browser.getAddress());
+		securityManager.authenticate(authRequest);
+		UI.getCurrent().getPage().setUriFragment(securityManager.getDashBoardViewUrl());
+	}
+
+	private class AuthentiationViewClickListener implements ClickListener {
+		@Override
+		public void buttonClick(ClickEvent event) {
+			try {
+				loginButtonClick();
+			} catch (FormValidationException | FMWSecurityException ex) {
+				MessageDialog.showExceptions(ex, LOGGER);
+			}
 		}
+
 	}
 }

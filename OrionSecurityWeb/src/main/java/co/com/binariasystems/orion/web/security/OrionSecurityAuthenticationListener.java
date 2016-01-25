@@ -5,13 +5,15 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationListener;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import co.com.binariasystems.fmw.ioc.IOCHelper;
 import co.com.binariasystems.orion.business.bean.services.SecurityBean;
 import co.com.binariasystems.orion.model.dto.AccessTokenDTO;
-import co.com.binariasystems.orion.model.dto.AuthenticationDTO;
 
 public class OrionSecurityAuthenticationListener implements AuthenticationListener{
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrionSecurityAuthenticationListener.class);
 	private SecurityBean securityBean;
 	
 	public OrionSecurityAuthenticationListener(){
@@ -29,7 +31,13 @@ public class OrionSecurityAuthenticationListener implements AuthenticationListen
 	@Override
 	public void onLogout(PrincipalCollection principals) {
 		AccessTokenDTO accessToken= (AccessTokenDTO)getAvailablePrincipal(principals);
-		securityBean.invalidateUserSession(new AuthenticationDTO(accessToken.getUser().getLoginAlias(), accessToken.getApplication().getApplicationCode().name()));
+		if(accessToken != null){
+			try {
+				securityBean.invalidateUserSession(accessToken);
+			} catch (Throwable ex) {
+				LOGGER.error("Has ocurred an unexpected error while invalidate user session", ex);
+			}
+		}
 	}
 	
 	protected Object getAvailablePrincipal(PrincipalCollection principals) {

@@ -4,7 +4,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -16,7 +15,6 @@ import co.com.binariasystems.fmw.util.db.DBUtil;
 import co.com.binariasystems.fmw.util.di.SpringIOCProvider;
 import co.com.binariasystems.fmw.util.messagebundle.PropertiesManager;
 import co.com.binariasystems.fmw.vweb.constants.VWebCommonConstants;
-import co.com.binariasystems.orion.business.bean.OrionSystemBean;
 import co.com.binariasystems.orion.business.utils.OrionBusinessConstants;
 import co.com.binariasystems.orion.business.utils.OrionBusinessUtils;
 import co.com.binariasystems.orion.web.utils.OrionWebConstants;

@@ -145,7 +145,7 @@
 		<property name="velocityEngineFactory" ref="velocityEngineFactory"/>
 	</bean>
 	
-	<bean id="auditoryDataProvider" class="co.com.binariasystems.fmw.security.auditory.ShiroBasedAuditoryDataProvider">
+	<bean id="auditoryDataProvider" class="co.com.binariasystems.orion.web.security.OrionAuditoryDataProvider">
 		<property name="supportAtmosphereWebSockets" value="true"/>
 	</bean>
 

@@ -17,16 +17,16 @@ public interface SecurityBean {
 	
 	public AccessTokenDTO saveAuthentication(AuthenticationDTO authentication) throws SecurityServicesException;
 	
-	public void invalidateUserSession(AuthenticationDTO authentication);
+	public void invalidateUserSession(AccessTokenDTO accessTokenDTO);
 	
 	public SN2Boolean validateAccessTokenValidity(AccessTokenDTO accessTokenDTO);
 	
 	public SN2Boolean registerFailedAuthententicationAttempt(AuthenticationDTO authentication);
 	
-	public List<RoleDTO> findUserRoles(AuthenticationDTO authentication);
+	public List<RoleDTO> findUserRoles(AccessTokenDTO accessTokenDTO);
 	
 	public List<ResourceDTO> findRoleResources(RoleDTO role);
 	
-	public List<ResourceDTO> findUserResources(Integer userId, Integer applicationId);
+	public List<ResourceDTO> findUserResources(AccessTokenDTO accessTokenDTO);
 	
 }

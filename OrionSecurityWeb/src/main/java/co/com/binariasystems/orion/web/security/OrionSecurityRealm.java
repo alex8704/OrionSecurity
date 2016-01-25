@@ -1,6 +1,5 @@
 package co.com.binariasystems.orion.web.security;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,17 +63,17 @@ public class OrionSecurityRealm extends AuthorizingRealm {
             throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
         }
 		
-		String username = getUsernameForPrincipal(getAvailablePrincipal(principals));
+		AccessTokenDTO accessToken = (AccessTokenDTO)getAvailablePrincipal(principals);
 		Set<String> roleNames = new LinkedHashSet<String>();
         Set<String> permissions = new LinkedHashSet<String>();
         List<ResourceDTO>  roleResources = null;
         
-        List<RoleDTO> userRoles = getUserRoles(username);
+        List<RoleDTO> userRoles = getUserRoles(accessToken);
         for(RoleDTO role : userRoles)
         	roleNames.add(role.getName());
         
         if(permissionsLookupEnabled){
-        	roleResources = getRoleResources(username, userRoles);
+        	roleResources = getUserResources(accessToken);
         	for(ResourceDTO resource : roleResources)
         		permissions.add(resource.getResourcePath());
         }
@@ -94,7 +93,8 @@ public class OrionSecurityRealm extends AuthorizingRealm {
 		SimpleAuthenticationInfo info = null;
 		AccessTokenDTO accessToken = null;
 		try{
-			accessToken = securityBean.saveAuthentication(new AuthenticationDTO(username, new String(upToken.getPassword()), (application != null ? application.name() : null)));
+			accessToken = securityBean.saveAuthentication(new AuthenticationDTO(username, new String(upToken.getPassword()), 
+					(application != null ? application.name() : null), upToken.getHost()));
 		}catch(SecurityServicesException ex){
 			throw traduceOrionClientException(ex);
 		}
@@ -107,16 +107,12 @@ public class OrionSecurityRealm extends AuthorizingRealm {
 		return info;
 	}
 	
-	protected List<RoleDTO> getUserRoles(String username){
-        return securityBean.findUserRoles(new AuthenticationDTO(username, null, (application != null ? application.name() : null)));
+	protected List<RoleDTO> getUserRoles(AccessTokenDTO accessToken){
+        return securityBean.findUserRoles(accessToken);
     }
 	
-	protected List<ResourceDTO> getRoleResources(String username, List<RoleDTO> userRoles){
-        List<ResourceDTO>  roleResources = new ArrayList<ResourceDTO>();
-        for(RoleDTO role : userRoles){
-			roleResources.addAll(securityBean.findRoleResources(role));
-		}
-        return roleResources;
+	protected List<ResourceDTO> getUserResources(AccessTokenDTO accessToken){
+		return securityBean.findUserResources(accessToken);
     }
 	
 	private AuthenticationException traduceOrionClientException(SecurityServicesException ex){

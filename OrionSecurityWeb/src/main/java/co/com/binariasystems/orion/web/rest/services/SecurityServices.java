@@ -60,8 +60,8 @@ public class SecurityServices {
 	@Path("invalidatesession")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public void invalidateUserSession(AuthenticationDTO authentication){
-		bean.invalidateUserSession(authentication);
+	public void invalidateUserSession(AccessTokenDTO accessTokenDTO){
+		bean.invalidateUserSession(accessTokenDTO);
 	}
 	
 	@Path("accesstokenvalidity")
@@ -74,8 +74,8 @@ public class SecurityServices {
 	@Path("userroles")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<RoleDTO> findUserRoles(AuthenticationDTO authentication){
-		return bean.findUserRoles(authentication);
+	public List<RoleDTO> findUserRoles(AccessTokenDTO accessTokenDTO){
+		return bean.findUserRoles(accessTokenDTO);
 	}
 	
 	@Path("roleresources")
@@ -86,9 +86,9 @@ public class SecurityServices {
 	}
 	
 	@Path("userresources")
-	@GET
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<ResourceDTO> findUserResources(@QueryParam("user") Integer userId, @QueryParam("application") Integer applicationId){
-		return bean.findUserResources(userId, applicationId);
+	public List<ResourceDTO> findUserResources(AccessTokenDTO accessTokenDTO){
+		return bean.findUserResources(accessTokenDTO);
 	}
 }

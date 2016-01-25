@@ -51,6 +51,8 @@ public class SegtModule implements Serializable {
     @JoinColumn(name = "ID_APLICACION", referencedColumnName = "ID_APLICACION")
     @ManyToOne(optional = false)
     private SegtApplication applicationId;
+    @Column(name = "POSICION")
+    private Integer index;
     
     public SegtModule(){}
     
@@ -123,6 +125,20 @@ public class SegtModule implements Serializable {
     public void setApplicationId(SegtApplication applicationId) {
         this.applicationId = applicationId;
     }
+
+	/**
+	 * @return the index
+	 */
+	public Integer getIndex() {
+		return index;
+	}
+
+	/**
+	 * @param index the index to set
+	 */
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

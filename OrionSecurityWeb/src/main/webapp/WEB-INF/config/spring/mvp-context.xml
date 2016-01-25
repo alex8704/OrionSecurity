@@ -13,6 +13,7 @@
 	<util:list id="application.mvp.viewProvider.viewsPackages">
 		<value>co.com.binariasystems.orion.web.view</value>
 		<value>co.com.binariasystems.orion.web.controller</value>
+		<value>co.com.binariasystems.orion.web.cruddto</value>
 	</util:list>
 
 	<bean id="defaultViewInstanceCreator" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.DefaultViewInstanceCreator">
