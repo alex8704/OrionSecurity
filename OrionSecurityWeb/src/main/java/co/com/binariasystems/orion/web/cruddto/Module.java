@@ -2,24 +2,30 @@ package co.com.binariasystems.orion.web.cruddto;
 
 import java.io.Serializable;
 
+import co.com.binariasystems.fmw.entity.annot.CRUDViewConfig;
 import co.com.binariasystems.fmw.entity.annot.Column;
 import co.com.binariasystems.fmw.entity.annot.Entity;
 import co.com.binariasystems.fmw.entity.annot.Key;
 import co.com.binariasystems.fmw.entity.annot.Relation;
 import co.com.binariasystems.fmw.entity.annot.SearcherConfig;
+import co.com.binariasystems.fmw.entity.annot.ViewFieldConfig;
+import co.com.binariasystems.fmw.entity.cfg.EntityConfigUIControl;
 import co.com.binariasystems.fmw.entity.cfg.PKGenerationStrategy;
 
 @Entity(table="SEGT_MODULOS",pkGenerationStrategy=PKGenerationStrategy.IDENTITY)
-@SearcherConfig(descriptionFields="name")
+@CRUDViewConfig(searcherConfig=@SearcherConfig(descriptionFields="name"))
 public class Module implements Serializable {
 	@Key(column="ID_MODULO")
     private Integer moduleId;
 	@Column(name="NOMBRE")
+	@ViewFieldConfig(ommitUpperTransform=true)
     private String name;
 	@Column(name="DESCRIPCION")
+	@ViewFieldConfig(ommitUpperTransform=true)
     private String description;
 	@Relation(column="ID_MODULO_PADRE")
     private Module parentModule;
+	@ViewFieldConfig(uiControl=EntityConfigUIControl.COMBOBOX)
 	@Relation(column="ID_APLICACION")
     private Application applicationId;
 	@Column(name="POSICION")

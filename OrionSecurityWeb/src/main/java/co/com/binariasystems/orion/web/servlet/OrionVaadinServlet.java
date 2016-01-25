@@ -20,11 +20,12 @@ import com.vaadin.server.VaadinServlet;
 @VaadinServletConfiguration(ui = Orion.class, productionMode = false)
 public class OrionVaadinServlet extends VaadinServlet{
 	private OrionSessionListener sessionListener = new OrionSessionListener();
-	private OrionSystemMessagesProvider systemMessagesProvider = new OrionSystemMessagesProvider();
+	private OrionSystemMessagesProvider systemMessagesProvider;
 	@Override
 	protected void servletInitialized() throws ServletException {
 		super.servletInitialized();
 		
+		systemMessagesProvider = new OrionSystemMessagesProvider(getServletContext().getContextPath());
 		getService().addSessionInitListener(sessionListener);
 		getService().addSessionDestroyListener(sessionListener);
 		getService().setSystemMessagesProvider(systemMessagesProvider);

@@ -61,6 +61,7 @@ public class AuthenticationViewController extends AbstractViewController{
 
 	@OnLoad
 	public void onLoadController() {
+		loginForm.initFocus();
 	}
 
 	@OnUnLoad

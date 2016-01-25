@@ -2,21 +2,25 @@ package co.com.binariasystems.orion.web.cruddto;
 
 import java.io.Serializable;
 
+import co.com.binariasystems.fmw.entity.annot.CRUDViewConfig;
 import co.com.binariasystems.fmw.entity.annot.Column;
 import co.com.binariasystems.fmw.entity.annot.Entity;
 import co.com.binariasystems.fmw.entity.annot.Key;
 import co.com.binariasystems.fmw.entity.annot.SearcherConfig;
+import co.com.binariasystems.fmw.entity.annot.ViewFieldConfig;
 import co.com.binariasystems.fmw.entity.cfg.PKGenerationStrategy;
 @Entity(table="SEGT_APLICACIONES",pkGenerationStrategy=PKGenerationStrategy.IDENTITY)
-@SearcherConfig(descriptionFields="name")
+@CRUDViewConfig(searcherConfig=@SearcherConfig(descriptionFields="name"))
 public class Application implements Serializable {
 	@Key(column="ID_APLICACION")
     private Integer applicationId;
 	@Column(name="COD_APLICACION")
-    private co.com.binariasystems.orion.model.enumerated.Application applicationCode;
+    private String applicationCode;
 	@Column(name="NOMBRE")
+	@ViewFieldConfig(ommitUpperTransform=true)
     private String name;
 	@Column(name="DESCRIPCION")
+	@ViewFieldConfig(ommitUpperTransform=true)
     private String description;
 	/**
 	 * @return the applicationId
@@ -33,13 +37,13 @@ public class Application implements Serializable {
 	/**
 	 * @return the applicationCode
 	 */
-	public co.com.binariasystems.orion.model.enumerated.Application getApplicationCode() {
+	public String getApplicationCode() {
 		return applicationCode;
 	}
 	/**
 	 * @param applicationCode the applicationCode to set
 	 */
-	public void setApplicationCode(co.com.binariasystems.orion.model.enumerated.Application applicationCode) {
+	public void setApplicationCode(String applicationCode) {
 		this.applicationCode = applicationCode;
 	}
 	/**

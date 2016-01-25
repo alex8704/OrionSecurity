@@ -95,7 +95,7 @@ public class DashboardView extends AbstractView implements OrionWebConstants {
 		
 		menuDivisorSplitPanel.setSplitPosition(250, Unit.PIXELS);
 		
-		centralSplitPanel.setMaxSplitPosition(30, Unit.PIXELS);
+		centralSplitPanel.setMaxSplitPosition(25, Unit.PIXELS);
 		centralSplitPanel.setLocked(true);
 		
 		accountInfoPanel.setSpacing(true);
