@@ -11,8 +11,8 @@ import co.com.binariasystems.fmw.vweb.uicomponet.builders.ComboBoxBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.LabelBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.searcher.VCriteriaUtils;
 import co.com.binariasystems.fmw.vweb.uicomponet.treemenu.MenuElement;
+import co.com.binariasystems.orion.model.dto.ApplicationDTO;
 import co.com.binariasystems.orion.web.controller.admin.AdmModuleViewController;
-import co.com.binariasystems.orion.web.cruddto.Application;
 import co.com.binariasystems.orion.web.cruddto.Module;
 
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -28,27 +28,22 @@ viewStringsByConventions= true)
 public class AdmModuleView extends AbstractView{
 	private FormPanel form;
 	private TreeTable adminGrid;
+	private BeanItemContainer<ApplicationDTO> applicationDS;
 	private ComboBoxBuilder applicationCmb;
 	private SearcherField<Module> parentModuleTxt;
-	private BeanItemContainer<MenuElement> itemsDataSource;
+	private BeanItemContainer<MenuElement> gridItemsDS;
 	private ContainerHierarchicalWrapper gridDataSource;
-	private ObjectProperty<Application> applicationDS;
-	private ObjectProperty<Module> parentModuleDS;
-	private ObjectProperty<Integer> auxAplicationDS;
+	private ObjectProperty<ApplicationDTO> applicationProperty;
+	private ObjectProperty<Module> parentModuleProperty;
+	private ObjectProperty<Integer> auxAplicationProperty;
 	
 	
 	@ViewBuild
 	public Component build(){
 		form = new FormPanel(2);
 		applicationCmb = new ComboBoxBuilder();
-		parentModuleTxt = new SearcherField<Module>(Application.class);
-		itemsDataSource = new BeanItemContainer<MenuElement>(MenuElement.class);
-		gridDataSource = new ContainerHierarchicalWrapper(itemsDataSource);
-		adminGrid = new TreeTable(null, gridDataSource);
-		applicationDS = new ObjectProperty<Application>(null, Application.class);
-		parentModuleDS = new ObjectProperty<Module>(null, Module.class);
-		auxAplicationDS = new ObjectProperty<Integer>(null, Integer.class);
-		
+		parentModuleTxt = new SearcherField<Module>(Module.class);
+		adminGrid = new TreeTable();
 		form.add(applicationCmb, Dimension.percent(100))
 		.add(parentModuleTxt, Dimension.percent(100))
 		.addCenteredOnNewRow(new LabelBuilder("&nbsp;").withFullWidth())
@@ -59,15 +54,28 @@ public class AdmModuleView extends AbstractView{
 	
 	@Init
 	public void init(){
+		applicationDS = new BeanItemContainer<ApplicationDTO>(ApplicationDTO.class);
+		gridItemsDS = new BeanItemContainer<MenuElement>(MenuElement.class);
+		gridDataSource = new ContainerHierarchicalWrapper(gridItemsDS);
+		applicationProperty = new ObjectProperty<ApplicationDTO>(null, ApplicationDTO.class);
+		parentModuleProperty = new ObjectProperty<Module>(null, Module.class);
+		auxAplicationProperty = new ObjectProperty<Integer>(null, Integer.class);
+		
+		adminGrid.setContainerDataSource(gridDataSource);
 		adminGrid.setVisibleColumns("caption");
-		applicationCmb.withProperty(applicationDS);
-		parentModuleTxt.setPropertyDataSource(parentModuleDS);
-		applicationDS.addValueChangeListener(new ValueChangeListener() {
+		
+		applicationCmb.setContainerDataSource(applicationDS);
+		applicationCmb.withProperty(applicationProperty);
+		applicationCmb.setItemCaptionPropertyId("name");
+		
+		applicationProperty.addValueChangeListener(new ValueChangeListener() {
 			@Override public void valueChange(ValueChangeEvent event) {
-				if(applicationDS.getValue() != null)
-					auxAplicationDS.setValue(applicationDS.getValue().getApplicationId());
+				if(applicationProperty.getValue() != null)
+					auxAplicationProperty.setValue(applicationProperty.getValue().getApplicationId());
 			}
 		});
-		parentModuleTxt.setCriteria(VCriteriaUtils.equals("applicationId", auxAplicationDS));
+		
+		parentModuleTxt.setPropertyDataSource(parentModuleProperty);
+		parentModuleTxt.setCriteria(VCriteriaUtils.equals("applicationId", auxAplicationProperty));
 	}
 }
