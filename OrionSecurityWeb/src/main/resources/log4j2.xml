@@ -45,12 +45,17 @@
 			<AppenderRef ref="DefaultAsyncRollingAppender" />
 		</Logger>
 	
-		<Logger name="org.apache.shiro" additivity="false" level="debug">
+		<Logger name="org.apache.shiro" additivity="false" level="warn">
 			<AppenderRef ref="AsyncStdout" />
 			<AppenderRef ref="DefaultAsyncRollingAppender" />
 		</Logger>
 	
-		<Logger name="org.atmosphere" additivity="false" level="debug">
+		<Logger name="org.atmosphere" additivity="false" level="warn">
+			<AppenderRef ref="AsyncStdout" />
+			<AppenderRef ref="DefaultAsyncRollingAppender" />
+		</Logger>
+		
+		<Logger name="org.springframework" additivity="false" level="warn">
 			<AppenderRef ref="AsyncStdout" />
 			<AppenderRef ref="DefaultAsyncRollingAppender" />
 		</Logger>

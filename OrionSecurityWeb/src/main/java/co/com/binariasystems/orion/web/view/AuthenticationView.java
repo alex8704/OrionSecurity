@@ -2,9 +2,11 @@ package co.com.binariasystems.orion.web.view;
 
 import co.com.binariasystems.fmw.vweb.constants.UIConstants;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.AuthenticationForm;
+import co.com.binariasystems.fmw.vweb.mvp.annotation.NoConventionString;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.View;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.View.Root;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewBuild;
+import co.com.binariasystems.fmw.vweb.mvp.annotation.validation.NullValidator;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.validation.RegExpValidator;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.validation.StringLengthValidator;
 import co.com.binariasystems.fmw.vweb.mvp.views.AbstractView;
@@ -34,13 +36,16 @@ import com.vaadin.ui.VerticalLayout;
 public class AuthenticationView extends AbstractView implements UIConstants, OrionWebConstants {
 	public static final String		MESSAGES_BUNDLE = OrionWebConstants.MESSAGES_PACKAGE + "." + MAIN_MESSAGES_FILE;
 	private VerticalLayout 				mainContainer;
+	@NoConventionString
 	private FormPanel					loginForm;
 	private Image						applicationLogo;
 	private LabelBuilder				welcomeLbl;
 	@PropertyId("username")
+	@NullValidator
 	@StringLengthValidator(min=6, max=30)
 	private TextFieldBuilder			usernameTxt;
 	@PropertyId("password")
+	@NullValidator
 	@RegExpValidator(expression="[a-zA-Z_0-9]{6,30}")
 	private PasswordFieldBuilder		passwordTxt;
 	@PropertyId("rememberMe")

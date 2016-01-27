@@ -56,6 +56,10 @@ public class SegtModule implements Serializable {
     
     public SegtModule(){}
     
+    public SegtModule(Integer moduleId){
+    	this.moduleId = moduleId;
+    }
+    
     /**
      * @return the moduleId
      */

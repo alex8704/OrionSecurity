@@ -8,6 +8,29 @@
 		join rec.authorizedRoles rol
 		left join rec.module 
 		where rol in(?1) and rec.application = ?2
-		order by rec.module.index asc, rec.index asc
+		order by rec.module.index asc, rec.module.moduleId asc, rec.index asc, rec.resourceId asc
+	</entry>
+	<entry key="SegtResource.findByApplicationAndNullModule">
+		select rec from SegtResource rec
+		join rec.application app
+		where app = ?1
+		and rec.module is null
+		order by rec.index asc, rec.resourceId asc
+	</entry>
+	<entry key="SegtResource.findByApplicationAndModule">
+		select rec from SegtResource rec
+		join rec.application app
+		join rec.module mod
+		where app = ?1 and mod = ?2
+		order by rec.index asc, rec.resourceId asc
+	</entry>
+	
+	<entry key="SegtModule.findByApplicationAndParentModule">
+		select mod from SegtModule mod
+		join mod.applicationId app
+		left join mod.parentModule pm
+		where app = ?1
+		and (?2 is null or pm = ?2)
+		order by pm.index asc, pm.moduleId asc, mod.index asc, mod.moduleId asc
 	</entry>
 </properties>

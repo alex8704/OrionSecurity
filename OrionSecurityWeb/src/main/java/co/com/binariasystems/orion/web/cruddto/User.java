@@ -188,5 +188,58 @@ public class User implements Serializable {
 	public void setIsActive(SN2Boolean isActive) {
 		this.isActive = isActive;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((credentials == null) ? 0 : credentials.hashCode());
+		result = prime * result + ((emailAddress == null) ? 0 : emailAddress.hashCode());
+		result = prime * result + ((identificationNumber == null) ? 0 : identificationNumber.hashCode());
+		result = prime * result + ((identificationTypeCode == null) ? 0 : identificationTypeCode.hashCode());
+		result = prime * result + ((loginAlias == null) ? 0 : loginAlias.hashCode());
+		return result;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (credentials == null) {
+			if (other.credentials != null)
+				return false;
+		} else if (!credentials.equals(other.credentials))
+			return false;
+		if (emailAddress == null) {
+			if (other.emailAddress != null)
+				return false;
+		} else if (!emailAddress.equals(other.emailAddress))
+			return false;
+		if (identificationNumber == null) {
+			if (other.identificationNumber != null)
+				return false;
+		} else if (!identificationNumber.equals(other.identificationNumber))
+			return false;
+		if (identificationTypeCode == null) {
+			if (other.identificationTypeCode != null)
+				return false;
+		} else if (!identificationTypeCode.equals(other.identificationTypeCode))
+			return false;
+		if (loginAlias == null) {
+			if (other.loginAlias != null)
+				return false;
+		} else if (!loginAlias.equals(other.loginAlias))
+			return false;
+		return true;
+	}
     
 }
