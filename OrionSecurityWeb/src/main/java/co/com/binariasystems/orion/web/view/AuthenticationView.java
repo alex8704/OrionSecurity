@@ -77,12 +77,14 @@ public class AuthenticationView extends AbstractView implements UIConstants, Ori
 
 		mainContainer.setSizeFull();
 		mainContainer.addComponent(loginForm);
-		loginForm.add(applicationLogo)
+		loginForm.addEmptyRow()
+		.add(applicationLogo)
 		.add(welcomeLbl)
 		.add(usernameTxt, 2)
 		.add(passwordTxt,2)
 		.add(rememberMeChk, 2)
-		.addCenteredOnNewRow(authenticateBtn);
+		.addCenteredOnNewRow(authenticateBtn)
+		.addEmptyRow();
 		
 		mainContainer.setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
 		loginForm.setWidth(loginPanelWidth.value, loginPanelWidth.unit);

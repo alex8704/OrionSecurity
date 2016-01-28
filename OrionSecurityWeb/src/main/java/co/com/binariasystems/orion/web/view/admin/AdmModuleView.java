@@ -17,6 +17,8 @@ import co.com.binariasystems.orion.model.dto.ModuleDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
 import co.com.binariasystems.orion.web.controller.admin.AdmModuleViewController;
 import co.com.binariasystems.orion.web.cruddto.Module;
+import co.com.binariasystems.orion.web.utils.ModuleColumnGenerator;
+import co.com.binariasystems.orion.web.utils.ResourceColumnGenerator;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -34,10 +36,12 @@ import com.vaadin.ui.TreeTable;
 @View(url="/modules", controller=AdmModuleViewController.class, 
 viewStringsByConventions= true)
 public class AdmModuleView extends AbstractView{
+	/*
+	 * Componentes Graficos
+	 */
 	private FormPanel form;
 	private TreeTable moduleHierarchyTree;
 	private Table resourceTable;
-	private BeanItemContainer<ApplicationDTO> applicationDS;
 	private ComboBoxBuilder applicationCmb;
 	private SearcherField<Module> parentModuleTxt;
 	@NoConventionString(permitDescription=true)
@@ -49,6 +53,10 @@ public class AdmModuleView extends AbstractView{
 	private HorizontalLayout moduleActionsPanel;
 	private HorizontalLayout resourceActionsPanel;
 	
+	/*
+	 * Data Binding y Otros
+	 */
+	private BeanItemContainer<ApplicationDTO> applicationDS;
 	private BeanItemContainer<ModuleDTO> moduleHierarchyItems;
 	private ContainerHierarchicalWrapper moduleHierarchyDS;
 	private BeanItemContainer<ResourceDTO> resourceTableDS;
@@ -56,7 +64,11 @@ public class AdmModuleView extends AbstractView{
 	private ObjectProperty<Module> parentModuleProperty;
 	private ObjectProperty<Integer> auxAplicationProperty;
 	
-	
+	/**
+	 * Crea los diferente componentes de la interfaz de usuario
+	 * Y los ubica dentro del formulario
+	 * @return
+	 */
 	@ViewBuild
 	public Component build(){
 		form = new FormPanel(2);
@@ -72,6 +84,7 @@ public class AdmModuleView extends AbstractView{
 		deleteResourceBtn = new ButtonBuilder();
 		moduleActionsPanel = new HorizontalLayout();
 		resourceActionsPanel = new HorizontalLayout();
+		addDataBinding();
 		
 		moduleActionsPanel.addComponent(newModuleBtn);
 		moduleActionsPanel.addComponent(editModuleBtn);
@@ -83,7 +96,7 @@ public class AdmModuleView extends AbstractView{
 		
 		form.add(applicationCmb, Dimension.percent(100))
 		.add(parentModuleTxt, Dimension.percent(100))
-		.addCenteredOnNewRow(new LabelBuilder("&nbsp;").withFullWidth())
+		.addEmptyRow()
 		.add(moduleActionsPanel, Alignment.BOTTOM_RIGHT)
 		.add(resourceActionsPanel, Alignment.BOTTOM_RIGHT)
 		.add(moduleHierarchyTree, Dimension.percent(100))
@@ -95,8 +108,11 @@ public class AdmModuleView extends AbstractView{
 		return form;
 	}
 	
-	@Init
-	public void init(){
+	/**
+	 * Inicializa todos los objetos encargados del DataBinding
+	 * de la Interfaz grafica
+	 */
+	private void addDataBinding(){
 		applicationDS = new BeanItemContainer<ApplicationDTO>(ApplicationDTO.class);
 		moduleHierarchyItems = new BeanItemContainer<ModuleDTO>(ModuleDTO.class);
 		moduleHierarchyDS = new ContainerHierarchicalWrapper(moduleHierarchyItems);
@@ -105,36 +121,10 @@ public class AdmModuleView extends AbstractView{
 		parentModuleProperty = new ObjectProperty<Module>(null, Module.class);
 		auxAplicationProperty = new ObjectProperty<Integer>(null, Integer.class);
 		
-		moduleActionsPanel.setSpacing(true);
-		resourceActionsPanel.setSpacing(true);
-		
-		newModuleBtn.withIcon(FontAwesome.FILE)
-		.disable();
-		newResourceBtn.withIcon(FontAwesome.EDIT)
-		.disable();
-		editModuleBtn.withIcon(FontAwesome.TRASH)
-		.disable();
-		editResourceBtn.withIcon(FontAwesome.FILE)
-		.disable();
-		deleteModuleBtn.withIcon(FontAwesome.EDIT)
-		.disable();
-		deleteResourceBtn.withIcon(FontAwesome.TRASH)
-		.disable();
-		
 		moduleHierarchyTree.setContainerDataSource(moduleHierarchyDS);
-		moduleHierarchyTree.setVisibleColumns("name");
-		moduleHierarchyTree.setSelectable(true);
-		moduleHierarchyTree.setMultiSelect(false);
-		
 		resourceTable.setContainerDataSource(resourceTableDS);
-		resourceTable.setVisibleColumns("name", "resourcePath");
-		resourceTable.setSelectable(true);
-		resourceTable.setMultiSelect(false);
-		
 		applicationCmb.setContainerDataSource(applicationDS);
 		applicationCmb.withProperty(applicationProperty);
-		applicationCmb.setItemCaptionPropertyId("name");
-		
 		applicationProperty.addValueChangeListener(new ValueChangeListener() {
 			@Override public void valueChange(ValueChangeEvent event) {
 				auxAplicationProperty.setValue(applicationProperty.getValue() != null ? applicationProperty.getValue().getApplicationId() : null);
@@ -143,6 +133,42 @@ public class AdmModuleView extends AbstractView{
 		
 		parentModuleTxt.setPropertyDataSource(parentModuleProperty);
 		parentModuleTxt.setCriteria(VCriteriaUtils.equals("applicationId", auxAplicationProperty));
+	}
+	
+	/**
+	 * Inicializa aspectos de presentacion y organizacion de la
+	 * interfaz de usuario, tales como tamanos de elementos, colores de fuentes
+	 * distribucion de elementos, etiquetas, etc. Meramente aspectos esteticos
+	 */
+	@Init
+	public void init(){
+		moduleActionsPanel.setSpacing(true);
+		resourceActionsPanel.setSpacing(true);
+		
+		newModuleBtn.withIcon(FontAwesome.FILE)
+		.disable();
+		newResourceBtn.withIcon(FontAwesome.FILE)
+		.disable();
+		editModuleBtn.withIcon(FontAwesome.EDIT)
+		.disable();
+		editResourceBtn.withIcon(FontAwesome.EDIT)
+		.disable();
+		deleteModuleBtn.withIcon(FontAwesome.TRASH)
+		.disable();
+		deleteResourceBtn.withIcon(FontAwesome.TRASH)
+		.disable();
+		
+		moduleHierarchyTree.addGeneratedColumn("name", new ModuleColumnGenerator());
+		moduleHierarchyTree.setVisibleColumns("name");
+		moduleHierarchyTree.setSelectable(true);
+		moduleHierarchyTree.setMultiSelect(false);
+		
+		resourceTable.addGeneratedColumn("name", new ResourceColumnGenerator());
+		resourceTable.setVisibleColumns("name", "resourcePath");
+		resourceTable.setSelectable(true);
+		resourceTable.setMultiSelect(false);
+		
+		applicationCmb.setItemCaptionPropertyId("name");
 
 	}
 }

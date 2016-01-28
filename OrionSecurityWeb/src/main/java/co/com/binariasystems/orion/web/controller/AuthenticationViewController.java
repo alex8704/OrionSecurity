@@ -13,6 +13,7 @@ import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController.OnLoad;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController.OnUnLoad;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewField;
 import co.com.binariasystems.fmw.vweb.mvp.controller.AbstractViewController;
+import co.com.binariasystems.fmw.vweb.mvp.dispatcher.MVPUtils;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormValidationException;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
@@ -84,7 +85,7 @@ public class AuthenticationViewController extends AbstractViewController{
 		authRequest.setHttpRequest(getVaadinRequest().getHttpServletRequest());
 		authRequest.setHost(browser.getAddress());
 		securityManager.authenticate(authRequest);
-		UI.getCurrent().getPage().setUriFragment(securityManager.getDashBoardViewUrl());
+		MVPUtils.navigateTo(securityManager.getDashBoardViewUrl());
 	}
 
 	private class AuthentiationViewClickListener implements ClickListener {

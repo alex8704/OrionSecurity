@@ -20,6 +20,8 @@ import co.com.binariasystems.orion.model.dto.ApplicationDTO;
 import co.com.binariasystems.orion.model.dto.ModuleDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
 import co.com.binariasystems.orion.web.cruddto.Module;
+import co.com.binariasystems.orion.web.utils.OrionWebUtils;
+import co.com.binariasystems.orion.web.view.admin.AdmResourceView;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -154,7 +156,7 @@ public class AdmModuleViewController extends AbstractViewController {
 		LOGGER.info("Clicked newModuleBtn");
 	}
 	private void newResourceBtnClickListener(){
-		LOGGER.info("Clicked newResourceBtn");
+		OrionWebUtils.modalPopup(OrionWebUtils.getViewURL(AdmResourceView.class));
 	}
 	private void editModuleBtnClickListener(){
 		LOGGER.info("Clicked editModuleBtn");
