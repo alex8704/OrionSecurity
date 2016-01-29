@@ -7,4 +7,5 @@ import co.com.binariasystems.orion.model.dto.ModuleDTO;
 
 public interface ModuleBean {
 	public List<ModuleDTO> findByApplicationAndParentModule(ApplicationDTO application, ModuleDTO module);
+	public ModuleDTO findById(Integer id);
 }

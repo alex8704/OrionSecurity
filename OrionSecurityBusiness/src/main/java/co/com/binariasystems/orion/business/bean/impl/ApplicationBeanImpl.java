@@ -21,4 +21,7 @@ public class ApplicationBeanImpl implements ApplicationBean{
 		return ObjectUtils.transferPropertiesIterableRecursive(dao.findAll(), ApplicationDTO.class);
 	}
 	
+	public ApplicationDTO findById(Integer id){
+		return ObjectUtils.transferPropertiesRecursive(dao.findOne(id), ApplicationDTO.class);
+	}
 }

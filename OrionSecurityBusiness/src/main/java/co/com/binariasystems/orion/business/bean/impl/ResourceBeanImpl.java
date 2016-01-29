@@ -37,4 +37,9 @@ public class ResourceBeanImpl implements ResourceBean {
 				ResourceDTO.class);
 	}
 
+	@Override
+	public ResourceDTO findById(Integer id) {
+		return ObjectUtils.transferPropertiesRecursive(dao.findOne(id), ResourceDTO.class);
+	}
+
 }

@@ -1,5 +1,8 @@
 package co.com.binariasystems.orion.web.controller.admin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,13 +141,13 @@ public class AdmModuleViewController extends AbstractViewController {
 		if(applicationProperty.getValue() == null) return;
 		ModuleDTO parentModule = ObjectUtils.transferPropertiesRecursive(parentModuleProperty.getValue(), ModuleDTO.class);
 		for(ModuleDTO module : moduleBean.findByApplicationAndParentModule(applicationProperty.getValue(), parentModule))
-			addGriItem(module);
+			addModuleTreeItem(module);
 	}
 	
-	private void addGriItem(ModuleDTO module){
+	private void addModuleTreeItem(ModuleDTO module){
 		if(moduleHierarchyDS.containsId(module))return;
 		if(module.getParentModule() != null && !moduleHierarchyDS.containsId(module.getParentModule()))
-			addGriItem(module.getParentModule());
+			addModuleTreeItem(module.getParentModule());
 		
 		moduleHierarchyDS.addItem(module);
 		moduleHierarchyTree.setCollapsed(module, true);
@@ -156,7 +159,15 @@ public class AdmModuleViewController extends AbstractViewController {
 		LOGGER.info("Clicked newModuleBtn");
 	}
 	private void newResourceBtnClickListener(){
-		OrionWebUtils.modalPopup(OrionWebUtils.getViewURL(AdmResourceView.class));
+		Map<String, String> requestParameters = new HashMap<String, String>();
+		ApplicationDTO application = applicationProperty.getValue();
+		ModuleDTO parentModule = ObjectUtils.transferPropertiesRecursive(parentModuleProperty.getValue(), ModuleDTO.class);
+		ModuleDTO module = moduleHierarchyTree.getValue() != null ? (ModuleDTO)moduleHierarchyTree.getValue() : parentModule;
+		ResourceDTO resource = (ResourceDTO) resourceTable.getValue();
+		requestParameters.put("applicationId", String.valueOf(application.getApplicationId()));
+		requestParameters.put("moduleId", module != null ? String.valueOf(module.getModuleId()) : null);
+		requestParameters.put("resourceId", resource != null ? String.valueOf(resource.getResourceId()) : null);
+		OrionWebUtils.modalPopup(OrionWebUtils.getViewURL(AdmResourceView.class), requestParameters);
 	}
 	private void editModuleBtnClickListener(){
 		LOGGER.info("Clicked editModuleBtn");

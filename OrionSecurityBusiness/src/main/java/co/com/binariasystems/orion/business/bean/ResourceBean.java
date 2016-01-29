@@ -11,4 +11,6 @@ public interface ResourceBean {
 	
 	public List<ResourceDTO> findByApplicationAndModule(ApplicationDTO application, ModuleDTO module);
 	
+	public ResourceDTO findById(Integer id);
+	
 }

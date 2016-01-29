@@ -4,6 +4,7 @@ import co.com.binariasystems.fmw.vweb.mvp.annotation.Init;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.NoConventionString;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.View;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewBuild;
+import co.com.binariasystems.fmw.vweb.mvp.annotation.validation.NullValidator;
 import co.com.binariasystems.fmw.vweb.mvp.views.AbstractView;
 import co.com.binariasystems.fmw.vweb.uicomponet.Dimension;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
@@ -18,6 +19,8 @@ import co.com.binariasystems.orion.web.utils.ApplicationColumnGenerator;
 import co.com.binariasystems.orion.web.utils.ModuleColumnGenerator;
 import co.com.binariasystems.orion.web.utils.ResourceColumnGenerator;
 
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ContainerHierarchicalWrapper;
 import com.vaadin.server.FontAwesome;
@@ -35,12 +38,22 @@ public class AdmResourceView extends AbstractView {
 	 * Componentes Graficos
 	 */
 	private FormPanel form;
+	@NullValidator
+	@PropertyId("application")
 	private Table applicationTable;
+	@PropertyId("module")
 	private TreeTable moduleTree;
 	private Table resourceTable;
+	@NullValidator
+	@PropertyId("name")
 	private TextFieldBuilder nameTxt;
+	@NullValidator
+	@PropertyId("description")
 	private TextFieldBuilder descriptionTxt;
+	@PropertyId("index")
 	private TextFieldBuilder indexTxt;
+	@NullValidator
+	@PropertyId("resourcePath")
 	private TextField pathTxt;
 	@NoConventionString(permitDescription=true)
 	private ButtonBuilder saveBtn, editBtn, deleteBtn, cancelBtn;
@@ -53,6 +66,8 @@ public class AdmResourceView extends AbstractView {
 	private BeanItemContainer<ModuleDTO> moduleTreeItems;
 	private ContainerHierarchicalWrapper moduleTreeDS;
 	private BeanItemContainer<ResourceDTO> resourceTableDS;
+	private ResourceDTO currentResource;
+	private BeanFieldGroup<ResourceDTO> fieldGroup;
 	
 	@ViewBuild
 	public Component build(){
@@ -91,6 +106,12 @@ public class AdmResourceView extends AbstractView {
 		moduleTreeItems = new BeanItemContainer<ModuleDTO>(ModuleDTO.class);
 		moduleTreeDS = new ContainerHierarchicalWrapper(moduleTreeItems);
 		resourceTableDS = new BeanItemContainer<ResourceDTO>(ResourceDTO.class);
+		currentResource = new ResourceDTO();
+		fieldGroup = new BeanFieldGroup<ResourceDTO>(ResourceDTO.class);
+		fieldGroup.setItemDataSource(currentResource);
+		
+		fieldGroup.setBuffered(false);
+		fieldGroup.bindMemberFields(this);
 		
 		applicationTable.setContainerDataSource(applicationTableDS);
 		applicationTable.setColumnHeaderMode(ColumnHeaderMode.EXPLICIT);
@@ -118,13 +139,16 @@ public class AdmResourceView extends AbstractView {
 		applicationTable.setWidth(100, Unit.PERCENTAGE);
 		applicationTable.addGeneratedColumn("name", new ApplicationColumnGenerator());
 		applicationTable.setVisibleColumns("name");
+		applicationTable.setSelectable(true);
 		
 		moduleTree.setWidth(100, Unit.PERCENTAGE);
 		moduleTree.addGeneratedColumn("name", new ModuleColumnGenerator());
 		moduleTree.setVisibleColumns("name");
+		moduleTree.setSelectable(true);
 		
 		resourceTable.setWidth(100, Unit.PERCENTAGE);
 		resourceTable.addGeneratedColumn("name", new ResourceColumnGenerator());
 		resourceTable.setVisibleColumns("name");
+		resourceTable.setSelectable(true);
 	}
 }

@@ -28,4 +28,9 @@ public class ModuleBeanImpl implements ModuleBean {
 						ObjectUtils.transferPropertiesRecursive(module, SegtModule.class)), 
 				ModuleDTO.class);
 	}
+
+	@Override
+	public ModuleDTO findById(Integer id) {
+		return ObjectUtils.transferPropertiesRecursive(dao.findOne(id), ModuleDTO.class);
+	}
 }
