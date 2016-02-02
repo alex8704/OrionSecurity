@@ -37,8 +37,9 @@ public final class OrionWebUtils {
 			if(!parameters.containsKey("popup"))
 				builder.append(initialChar).append("popup=true");
 			for(String paramName : parameters.keySet())
-				builder.append(builder.length() == 0 ? initialChar : "&")
-				.append(paramName).append("=").append(parameters.get(paramName));
+				if(org.apache.commons.lang3.StringUtils.isNotEmpty(parameters.get(paramName)))
+					builder.append(builder.length() == 0 ? initialChar : "&")
+					.append(paramName).append("=").append(parameters.get(paramName));
 		}
 		return builder.toString();
 	}

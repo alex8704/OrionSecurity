@@ -58,7 +58,7 @@ public class SecurityBeanImpl implements SecurityBean {
 	private int maxAuthenticationRetries = 3;
 	
 	public UserDTO findUserByLoginAlias(String loginAlias){
-		return ObjectUtils.transferPropertiesRecursive(userDAO.findFirstByLoginAlias(loginAlias), UserDTO.class);
+		return ObjectUtils.transferProperties(userDAO.findFirstByLoginAlias(loginAlias), UserDTO.class);
 	}
 	
 	@Transactional
@@ -66,7 +66,7 @@ public class SecurityBeanImpl implements SecurityBean {
 		SegtUser user = userDAO.findFirstByLoginAlias(authentication.getUsername());
 		validateUserAccount(user);
 		validateUserBlocking(user);
-		if(!credentialsMatches(authentication.getPassword(), ObjectUtils.transferPropertiesRecursive(user.getCredentials(), UserCredentialsDTO.class))){
+		if(!credentialsMatches(authentication.getPassword(), ObjectUtils.transferProperties(user.getCredentials(), UserCredentialsDTO.class))){
 			if(!registerFailedAuthententicationAttempt(authentication).booleanValue())
 				throw new SecurityServicesException(SecurityExceptionType.MAX_AUTHENTICATION_ATTEMPTS, "Maximum authentication attempts exceeded");
 			throw new SecurityServicesException(SecurityExceptionType.CREDENTIALS_NOT_MATCH, "Authentication credentials has not correct");
@@ -93,12 +93,12 @@ public class SecurityBeanImpl implements SecurityBean {
 		userDAO.save(user);
 		accessToken = accessTokenDAO.save(accessToken);
 		
-		return ObjectUtils.transferPropertiesRecursive(accessToken, AccessTokenDTO.class);
+		return ObjectUtils.transferProperties(accessToken, AccessTokenDTO.class);
 	}
 	
 	@Transactional
 	public void invalidateUserSession(AccessTokenDTO accessTokenDTO){
-		SegtAccessToken accessToken = ObjectUtils.transferPropertiesRecursive(accessTokenDTO, SegtAccessToken.class);
+		SegtAccessToken accessToken = ObjectUtils.transferProperties(accessTokenDTO, SegtAccessToken.class);
 		accessToken.setId(new SegtAccessTokenPK(accessToken.getUser().getUserId(), accessToken.getApplication().getApplicationId()));
 		accessToken.setExpirationDate(new Date());
 		accessToken.setIsActive(SN2Boolean.N);
@@ -155,21 +155,21 @@ public class SecurityBeanImpl implements SecurityBean {
 	}
 	
 	public List<RoleDTO> findUserRoles(AccessTokenDTO accessTokenDTO){
-		SegtUser user = ObjectUtils.transferPropertiesRecursive(accessTokenDTO.getUser(), SegtUser.class);
-		SegtApplication application = ObjectUtils.transferPropertiesRecursive(accessTokenDTO.getApplication(), SegtApplication.class);
-		return ObjectUtils.transferPropertiesListRecursive(roleDAO.findByAssignedUsersAndApplication(user, application), RoleDTO.class);
+		SegtUser user = ObjectUtils.transferProperties(accessTokenDTO.getUser(), SegtUser.class);
+		SegtApplication application = ObjectUtils.transferProperties(accessTokenDTO.getApplication(), SegtApplication.class);
+		return ObjectUtils.transferProperties(roleDAO.findByAssignedUsersAndApplication(user, application), RoleDTO.class);
 	}
 	
 	public List<ResourceDTO> findRoleResources(RoleDTO role){
 		List<SegtResource> resources = resourceDAO.findByAuthorizedRolesAndApplication(new SegtRole(role.getRolId()), new SegtApplication(role.getApplication().getApplicationId()));
-		return ObjectUtils.transferPropertiesListRecursive(resources, ResourceDTO.class);
+		return ObjectUtils.transferProperties(resources, ResourceDTO.class);
 	}
 	
 	public List<ResourceDTO> findUserResources(AccessTokenDTO accessTokenDTO){
-		SegtUser user = ObjectUtils.transferPropertiesRecursive(accessTokenDTO.getUser(), SegtUser.class);
-		SegtApplication application = ObjectUtils.transferPropertiesRecursive(accessTokenDTO.getApplication(), SegtApplication.class);
+		SegtUser user = ObjectUtils.transferProperties(accessTokenDTO.getUser(), SegtUser.class);
+		SegtApplication application = ObjectUtils.transferProperties(accessTokenDTO.getApplication(), SegtApplication.class);
 		List<SegtRole> roles = roleDAO.findByAssignedUsersAndApplication(user, application);
 		List<SegtResource> resources = roles.isEmpty() ? new LinkedList<SegtResource>() :resourceDAO.findByAuthorizedRolesListAndApplication(roles, application);
-		return ObjectUtils.transferPropertiesListRecursive(resources, ResourceDTO.class);
+		return ObjectUtils.transferProperties(resources, ResourceDTO.class);
 	}
 }

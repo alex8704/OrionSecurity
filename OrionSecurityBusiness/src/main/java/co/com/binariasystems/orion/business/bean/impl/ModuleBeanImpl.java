@@ -22,15 +22,25 @@ public class ModuleBeanImpl implements ModuleBean {
 
 	@Override
 	public List<ModuleDTO> findByApplicationAndParentModule(ApplicationDTO application, ModuleDTO module) {
-		return ObjectUtils.transferPropertiesListRecursive(
+		return ObjectUtils.transferProperties(
 				dao.findByApplicationAndParentModule(
-						ObjectUtils.transferPropertiesRecursive(application, SegtApplication.class), 
-						ObjectUtils.transferPropertiesRecursive(module, SegtModule.class)), 
+						ObjectUtils.transferProperties(application, SegtApplication.class), 
+						ObjectUtils.transferProperties(module, SegtModule.class)), 
 				ModuleDTO.class);
 	}
 
 	@Override
 	public ModuleDTO findById(Integer id) {
-		return ObjectUtils.transferPropertiesRecursive(dao.findOne(id), ModuleDTO.class);
+		return ObjectUtils.transferProperties(dao.findOne(id), ModuleDTO.class);
+	}
+
+	@Override
+	public ModuleDTO save(ModuleDTO module) {
+		return ObjectUtils.transferProperties(dao.save(ObjectUtils.transferProperties(module, SegtModule.class)), ModuleDTO.class);
+	}
+
+	@Override
+	public void delete(ModuleDTO module) {
+		dao.delete(ObjectUtils.transferProperties(module, SegtModule.class));
 	}
 }

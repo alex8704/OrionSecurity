@@ -16,7 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -47,10 +46,7 @@ public class SegtRole implements Serializable {
     private String description;
     @ManyToMany(mappedBy = "authorizedRoles")
     private List<SegtResource> authorizedResources;
-    @JoinTable(name = "SEGT_ROLES_X_USUARIO", joinColumns = {
-        @JoinColumn(name = "ID_ROL", referencedColumnName = "ID_ROL")}, inverseJoinColumns = {
-        @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO")})
-    @ManyToMany
+    @ManyToMany(mappedBy = "assignedRoles")
     private List<SegtUser> assignedUsers;
     @JoinColumn(name = "ID_APLICACION", referencedColumnName = "ID_APLICACION")
     @ManyToOne(optional = false)

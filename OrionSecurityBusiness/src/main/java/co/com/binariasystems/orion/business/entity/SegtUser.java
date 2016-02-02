@@ -20,6 +20,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -90,7 +92,10 @@ public class SegtUser implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "ES_ACTIVO")
     private SN2Boolean isActive;
-    @ManyToMany(mappedBy = "assignedUsers")
+    @JoinTable(name = "SEGT_ROLES_X_USUARIO", joinColumns = {
+    		@JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO")}, inverseJoinColumns = {
+    		@JoinColumn(name = "ID_ROL", referencedColumnName = "ID_ROL")})
+        @ManyToMany
     private List<SegtRole> assignedRoles;
     
     public SegtUser() {}

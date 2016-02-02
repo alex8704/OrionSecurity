@@ -40,7 +40,7 @@
 				Logger Ancestro del resto de loggers de la aplicacion ya que referencia el 
 				paquete base de los demas paquetes de la aplicacion co.com.binariasystems 
 		****************************************************************************************************************** -->
-		<Logger name="co.com.binariasystems" additivity="false" level="debug">
+		<Logger name="co.com.binariasystems" additivity="false" level="info">
 			<AppenderRef ref="AsyncStdout" />
 			<AppenderRef ref="DefaultAsyncRollingAppender" />
 		</Logger>
