@@ -11,7 +11,7 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import co.com.binariasystems.fmw.reflec.TypeHelper;
 
 public class OrionAsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
-	Logger LOGGER = LoggerFactory.getLogger(OrionAsyncExceptionHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrionAsyncExceptionHandler.class);
 	@Override
 	public void handleUncaughtException(Throwable ex, Method method, Object... params) {
 		StringBuilder msgBuilder = new StringBuilder();

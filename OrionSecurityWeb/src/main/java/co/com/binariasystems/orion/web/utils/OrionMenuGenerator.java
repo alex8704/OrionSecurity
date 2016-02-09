@@ -60,7 +60,7 @@ public class OrionMenuGenerator {
 	}
 	
 	private List<ResourceDTO> getAuthorizedResources(HttpServletRequest httpRequest) throws FMWSecurityException{
-		AccessTokenDTO accessToken = auditoryDataProvider.getCurrenAuditoryUserByServletRequest(httpRequest);
+		AccessTokenDTO accessToken = auditoryDataProvider.getCurrenAuditoryUser(httpRequest);
 		return securityBean.findUserResources(accessToken);
 	}
 	

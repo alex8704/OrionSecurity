@@ -14,6 +14,8 @@ public interface ResourceBean {
 	
 	public ResourceDTO findById(Integer id);
 	
+	public ResourceDTO save(ResourceDTO resource);
+	
 	public ResourceDTO save(ResourceDTO resource, List<RoleDTO> roles);
 	
 	public void delete(ResourceDTO resource);

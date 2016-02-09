@@ -38,9 +38,9 @@
 	<listener>
 		<listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
 	</listener>
-	<listener>
-		<listener-class>co.com.binariasystems.fmw.vweb.servlet.HSQLSeverRunListener</listener-class>
-	</listener>
+<!-- 	<listener> -->
+<!-- 		<listener-class>co.com.binariasystems.fmw.vweb.servlet.HSQLSeverRunListener</listener-class> -->
+<!-- 	</listener> -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>

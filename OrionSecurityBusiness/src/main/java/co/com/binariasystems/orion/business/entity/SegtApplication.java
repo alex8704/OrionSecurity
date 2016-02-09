@@ -22,14 +22,15 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import co.com.binariasystems.orion.model.enumerated.Application;
+import co.com.binariasystems.commonsmodel.enumerated.Application;
+import co.com.binariasystems.orion.business.utils.OrionBusinessConstants;
 
 /**
  *
  * @author Alexander
  */
 @Entity
-@Table(name = "SEGT_APLICACIONES")
+@Table(schema=OrionBusinessConstants.ORION_DBSCHEMA, name = "SEGT_APLICACIONES")
 @NamedQueries({
     @NamedQuery(name = "SegtApplication.findAll", query = "SELECT s FROM SegtApplication s")})
 public class SegtApplication implements Serializable {

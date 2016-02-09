@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import co.com.binariasystems.commonsmodel.enumerated.SN2Boolean;
 import co.com.binariasystems.fmw.ioc.IOCHelper;
 import co.com.binariasystems.orion.business.OrionException;
 import co.com.binariasystems.orion.business.SecurityServicesException;
@@ -20,7 +21,6 @@ import co.com.binariasystems.orion.model.dto.ResourceDTO;
 import co.com.binariasystems.orion.model.dto.RoleDTO;
 import co.com.binariasystems.orion.model.dto.UserCredentialsDTO;
 import co.com.binariasystems.orion.model.dto.UserDTO;
-import co.com.binariasystems.orion.model.enumerated.SN2Boolean;
 
 @RequestScoped
 @Path("security")

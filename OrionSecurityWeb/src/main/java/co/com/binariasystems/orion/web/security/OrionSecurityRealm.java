@@ -23,6 +23,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
+import co.com.binariasystems.commonsmodel.enumerated.Application;
 import co.com.binariasystems.fmw.ioc.IOCHelper;
 import co.com.binariasystems.orion.business.SecurityServicesException;
 import co.com.binariasystems.orion.business.bean.services.SecurityBean;
@@ -30,7 +31,6 @@ import co.com.binariasystems.orion.model.dto.AccessTokenDTO;
 import co.com.binariasystems.orion.model.dto.AuthenticationDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
 import co.com.binariasystems.orion.model.dto.RoleDTO;
-import co.com.binariasystems.orion.model.enumerated.Application;
 import co.com.binariasystems.orion.model.enumerated.SecurityExceptionType;
 
 public class OrionSecurityRealm extends AuthorizingRealm {

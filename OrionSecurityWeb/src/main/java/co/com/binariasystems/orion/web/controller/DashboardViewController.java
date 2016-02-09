@@ -69,7 +69,7 @@ public class DashboardViewController extends AbstractViewController{
 	
 	@OnLoad
 	public void onLoad() throws FMWSecurityException{
-		AccessTokenDTO accountInfo = auditoryDataProvider.getCurrenAuditoryUserByServletRequest(getVaadinRequest().getHttpServletRequest());
+		AccessTokenDTO accountInfo = auditoryDataProvider.getCurrenAuditoryUser(getVaadinRequest().getHttpServletRequest());
 		List<MenuElement> menuOptions = menuGenerator.generateMenuItems(getVaadinRequest().getHttpServletRequest());
 		String accessDate = accessDateFmt.format(accountInfo.getUser().getLastAccessDate());
 		menuOptions.add(new MenuAction(getText("DashboardView.closeSession.caption"), getText("DashboardView.closeSession.caption"), "DashboardView.closeSession"));

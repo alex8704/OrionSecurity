@@ -1,6 +1,7 @@
 package co.com.binariasystems.orion.web.view.admin;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import co.com.binariasystems.fmw.vweb.mvp.annotation.Init;
@@ -21,7 +22,6 @@ import co.com.binariasystems.orion.model.dto.ApplicationDTO;
 import co.com.binariasystems.orion.model.dto.ModuleDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
 import co.com.binariasystems.orion.web.controller.admin.AdmModuleViewController;
-import co.com.binariasystems.orion.web.cruddto.Module;
 import co.com.binariasystems.orion.web.utils.ModuleColumnGenerator;
 import co.com.binariasystems.orion.web.utils.ResourceColumnGenerator;
 
@@ -51,7 +51,7 @@ public class AdmModuleView extends AbstractView{
 	private TreeTable 							moduleHierarchyTree;
 	private Table 								resourceTable;
 	private ComboBoxBuilder 					applicationCmb;
-	private SearcherField<Module> 				parentModuleTxt;
+	private SearcherField<ModuleDTO> 			parentModuleTxt;
 	@NoConventionString(permitDescription=true)
 	private ButtonBuilder						newModuleBtn, 
 												newResourceBtn,
@@ -63,6 +63,8 @@ public class AdmModuleView extends AbstractView{
 												resourceOptionsLbl;
 	private HorizontalLayout 					moduleActionsPanel,
 												resourceActionsPanel;
+	@NoConventionString
+	private CreateModuleWindow					editModuleWindow;
 	
 	/*
 	 * Data Binding y Otros
@@ -72,7 +74,7 @@ public class AdmModuleView extends AbstractView{
 	private ContainerHierarchicalWrapper 		moduleHierarchyDS;
 	private BeanItemContainer<ResourceDTO> 		resourceTableDS;
 	private ObjectProperty<ApplicationDTO> 		applicationProperty;
-	private ObjectProperty<Module> 				parentModuleProperty;
+	private ObjectProperty<ModuleDTO>			parentModuleProperty;
 	private ObjectProperty<Integer> 			auxAplicationProperty;
 	private Map<String, String>					notificationMsgMapping;
 	private Map<Button, MessageDialog>			confirmMsgDialogMapping;
@@ -87,7 +89,7 @@ public class AdmModuleView extends AbstractView{
 	public Component build(){
 		form = new FormPanel(2);
 		applicationCmb = new ComboBoxBuilder();
-		parentModuleTxt = new SearcherField<Module>(Module.class);
+		parentModuleTxt = new SearcherField<ModuleDTO>(ModuleDTO.class);
 		moduleHierarchyTree = new TreeTable();
 		resourceTable = new Table();
 		newModuleBtn = new ButtonBuilder();
@@ -100,6 +102,7 @@ public class AdmModuleView extends AbstractView{
 		resourceActionsPanel = new HorizontalLayout();
 		moduleOptionsLbl = new LabelBuilder();
 		resourceOptionsLbl = new LabelBuilder();
+		editModuleWindow = new CreateModuleWindow();
 		addDataBinding();
 		
 		moduleActionsPanel.addComponent(moduleOptionsLbl);
@@ -138,7 +141,7 @@ public class AdmModuleView extends AbstractView{
 		moduleHierarchyDS = new ContainerHierarchicalWrapper(moduleHierarchyItems);
 		resourceTableDS = new BeanItemContainer<ResourceDTO>(ResourceDTO.class);
 		applicationProperty = new ObjectProperty<ApplicationDTO>(null, ApplicationDTO.class);
-		parentModuleProperty = new ObjectProperty<Module>(null, Module.class);
+		parentModuleProperty = new ObjectProperty<ModuleDTO>(null, ModuleDTO.class);
 		auxAplicationProperty = new ObjectProperty<Integer>(null, Integer.class);
 		notificationMsgMapping = new HashMap<String, String>();
 		confirmMsgDialogMapping = new HashMap<Button, MessageDialog>();
@@ -180,6 +183,13 @@ public class AdmModuleView extends AbstractView{
 		.withData("delete-module").disable();
 		deleteResourceBtn.withIcon(FontAwesome.TRASH)
 		.withData("delete-resource").disable();
+		
+		Iterator<Component> it = moduleActionsPanel.iterator();
+		while(it.hasNext())
+			moduleActionsPanel.setComponentAlignment(it.next(), Alignment.MIDDLE_RIGHT);
+		it = resourceActionsPanel.iterator();
+		while(it.hasNext())
+			resourceActionsPanel.setComponentAlignment(it.next(), Alignment.MIDDLE_RIGHT);
 		
 		moduleHierarchyTree.setPageLength(12);
 		moduleHierarchyTree.addGeneratedColumn("name", new ModuleColumnGenerator());

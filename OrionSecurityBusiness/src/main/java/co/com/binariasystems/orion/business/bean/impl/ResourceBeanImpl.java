@@ -44,6 +44,14 @@ public class ResourceBeanImpl implements ResourceBean {
 	public ResourceDTO findById(Integer id) {
 		return ObjectUtils.transferProperties(dao.findOne(id), ResourceDTO.class);
 	}
+	
+	@Override
+	public ResourceDTO save(ResourceDTO resource) {
+		SegtResource entity = resource.getResourceId() == null ? ObjectUtils.transferProperties(resource, SegtResource.class) : dao.findOne(resource.getResourceId());
+		if(resource.getResourceId() != null)
+			ObjectUtils.transferProperties(resource, entity);
+		return ObjectUtils.transferProperties(dao.save(entity), ResourceDTO.class);
+	}
 
 	@Override
 	public ResourceDTO save(ResourceDTO resource, List<RoleDTO> roles) {

@@ -1,3 +1,4 @@
+
 package co.com.binariasystems.orion.web.controller.admin;
 
 import java.util.List;
@@ -25,7 +26,6 @@ import co.com.binariasystems.orion.business.bean.RoleBean;
 import co.com.binariasystems.orion.model.dto.ApplicationDTO;
 import co.com.binariasystems.orion.model.dto.ModuleDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
-import co.com.binariasystems.orion.model.dto.RoleDTO;
 import co.com.binariasystems.orion.web.uievent.AdmResourceViewEvent;
 
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -79,7 +79,6 @@ public class AdmResourceViewController extends AbstractViewController{
 	private AdmResourceViewValueChangeListener 				valueChangeListener;
 	private AdmResourceViewClickListener 					clickListener;
 	private boolean 										isPopupMode;
-	private List<RoleDTO> 									resourceRoles;
 	
 	
 	@Init
@@ -156,7 +155,6 @@ public class AdmResourceViewController extends AbstractViewController{
 	
 	private void resourceTableValueChange(ResourceDTO resource){
 		currentResource = resource;
-		resourceRoles = resource != null ? roleBean.findByAuthorizedResources(resource) : null;
 		resetResourceForm();
 		toggleActionButtonsState();
 		resourceTable.setEnabled(!isPopupMode);
@@ -221,15 +219,22 @@ public class AdmResourceViewController extends AbstractViewController{
 		form.validate();
 		if(button.equals(saveBtn))
 			currentResource.setResourceId(null);
+			
 		currentResource.setApplication(applicationTableProperty.getValue());
 		currentResource.setModule(moduleTreeeProperty.getValue());
-		ResourceDTO resource = resourceBean.save(currentResource, resourceRoles);
+		ResourceDTO resource = resourceBean.save(currentResource);
 		if(!isPopupMode){
 			reloadResourceTable();
 			resourceTable.select(resource);
 			showSuccessOperationNotification(button.getData().toString());
 		}
 		notifyPopupEvent(button.getData().toString(), resource);
+	}
+	
+	private void deleteBtnClick(){
+		resourceBean.delete(currentResource);
+		reloadResourceTable();
+		showSuccessOperationNotification(deleteBtn.getData().toString());
 	}
 	
 	private void notifyPopupEvent(String eventId, ResourceDTO resource){
@@ -272,6 +277,8 @@ public class AdmResourceViewController extends AbstractViewController{
 					saveAndEditBtnClick(editBtn);
 				if(confirmMsgDialogMapping.get(cancelBtn).yesButton().equals(event.getButton()))
 					cancelOKClick();
+				if(confirmMsgDialogMapping.get(deleteBtn).yesButton().equals(event.getButton()))
+					deleteBtnClick();
 			}catch(Exception ex){
 				MessageDialog.showExceptions(ex, LOGGER);
 				toggleActionButtonsState();

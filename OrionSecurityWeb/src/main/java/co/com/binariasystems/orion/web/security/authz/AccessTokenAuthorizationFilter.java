@@ -18,7 +18,6 @@ public class AccessTokenAuthorizationFilter extends AuthorizationFilter{
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccessTokenAuthorizationFilter.class);
 	private String tokenHeaderName;
 	private SecurityBean securityBean;
-	private final static String FIRST_AUTHENTICATION_HEADER = "orion-serv-first-auhtc";
 
 	@Override
 	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
@@ -63,10 +62,10 @@ public class AccessTokenAuthorizationFilter extends AuthorizationFilter{
 		this.tokenHeaderName = tokenHeaderName;
 	}
 	
-	private SecurityBean getSecurityBean(){
-		if(securityBean == null)
-			securityBean = IOCHelper.getBean(SecurityBean.class);
-		return securityBean;
-	}
+//	private SecurityBean getSecurityBean(){
+//		if(securityBean == null)
+//			securityBean = IOCHelper.getBean(SecurityBean.class);
+//		return securityBean;
+//	}
 
 }

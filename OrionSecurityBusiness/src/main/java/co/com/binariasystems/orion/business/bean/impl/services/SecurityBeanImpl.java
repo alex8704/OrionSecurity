@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.com.binariasystems.fmw.security.crypto.CredentialsCrypto;
-import co.com.binariasystems.fmw.security.crypto.CredentialsCryptoId;
-import co.com.binariasystems.fmw.security.crypto.CredentialsCryptoProvider;
-import co.com.binariasystems.fmw.security.crypto.MatchingRequest;
+import co.com.binariasystems.commonsmodel.enumerated.Application;
+import co.com.binariasystems.commonsmodel.enumerated.SN2Boolean;
 import co.com.binariasystems.fmw.util.ObjectUtils;
 import co.com.binariasystems.orion.business.SecurityServicesException;
 import co.com.binariasystems.orion.business.bean.services.SecurityBean;
@@ -27,14 +25,13 @@ import co.com.binariasystems.orion.business.entity.SegtResource;
 import co.com.binariasystems.orion.business.entity.SegtRole;
 import co.com.binariasystems.orion.business.entity.SegtUser;
 import co.com.binariasystems.orion.business.helper.AccessTokenHelper;
+import co.com.binariasystems.orion.business.utils.OrionBusinessUtils;
 import co.com.binariasystems.orion.model.dto.AccessTokenDTO;
 import co.com.binariasystems.orion.model.dto.AuthenticationDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
 import co.com.binariasystems.orion.model.dto.RoleDTO;
 import co.com.binariasystems.orion.model.dto.UserCredentialsDTO;
 import co.com.binariasystems.orion.model.dto.UserDTO;
-import co.com.binariasystems.orion.model.enumerated.Application;
-import co.com.binariasystems.orion.model.enumerated.SN2Boolean;
 import co.com.binariasystems.orion.model.enumerated.SecurityExceptionType;
 
 @Service
@@ -50,11 +47,6 @@ public class SecurityBeanImpl implements SecurityBean {
 	private RoleDAO roleDAO;
 	@Autowired
 	private ResourceDAO resourceDAO;
-
-	private String privateSalt = "dzNidDNzdDRwcDUzY3VyM3A0NTV3MHJkc2FsdA==";
-	private String hashAlgorithm = "SHA-256";
-	private int hashIterations = 50000;
-	private boolean storedCredentialsHexEncoded = true;
 	private int maxAuthenticationRetries = 3;
 	
 	public UserDTO findUserByLoginAlias(String loginAlias){
@@ -132,16 +124,7 @@ public class SecurityBeanImpl implements SecurityBean {
 	
 	
 	private boolean credentialsMatches(String providedCredentials, UserCredentialsDTO storedCredentials){
-		CredentialsCrypto credentialsCrypto = CredentialsCryptoProvider.get(CredentialsCryptoId.SHIRO);
-		MatchingRequest matchingRequest = new  MatchingRequest();
-		matchingRequest.setAlgorithmName(hashAlgorithm);
-		matchingRequest.setHashIterations(hashIterations);
-		matchingRequest.setHexEncoded(storedCredentialsHexEncoded);
-		matchingRequest.setPrivateSalt(privateSalt);
-		matchingRequest.setProvidedPassword(providedCredentials);
-		matchingRequest.setStoredPassword(storedCredentials.getPassword());
-		matchingRequest.setStoredPasswordSalt(storedCredentials.getPasswordSalt());
-		return credentialsCrypto.credentialsMatches(matchingRequest);
+		return OrionBusinessUtils.credentialsMatches(providedCredentials, storedCredentials.getPassword(), storedCredentials.getPasswordSalt());
 	}
 	
 	private void validateUserAccount(SegtUser user) throws SecurityServicesException{

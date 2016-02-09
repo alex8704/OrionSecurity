@@ -22,12 +22,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import co.com.binariasystems.orion.business.utils.OrionBusinessConstants;
+
 /**
  *
  * @author Alexander
  */
 @Entity
-@Table(name = "SEGT_MODULOS")
+@Table(schema=OrionBusinessConstants.ORION_DBSCHEMA, name = "SEGT_MODULOS")
 @NamedQueries({
     @NamedQuery(name = "SegtModule.findAll", query = "SELECT s FROM SegtModule s")})
 public class SegtModule implements Serializable {

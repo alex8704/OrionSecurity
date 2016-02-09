@@ -32,14 +32,15 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import co.com.binariasystems.orion.model.enumerated.SN2Boolean;
+import co.com.binariasystems.commonsmodel.enumerated.SN2Boolean;
+import co.com.binariasystems.orion.business.utils.OrionBusinessConstants;
 
 /**
  *
  * @author Alexander
  */
 @Entity
-@Table(name = "SEGT_USUARIOS")
+@Table(schema=OrionBusinessConstants.ORION_DBSCHEMA, name = "SEGT_USUARIOS")
 @NamedQueries({
     @NamedQuery(name = "SegtUser.findAll", query = "SELECT s FROM SegtUser s")})
 public class SegtUser implements Serializable {

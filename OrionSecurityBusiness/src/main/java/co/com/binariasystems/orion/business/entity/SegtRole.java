@@ -23,12 +23,14 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import co.com.binariasystems.orion.business.utils.OrionBusinessConstants;
+
 /**
  *
  * @author Alexander
  */
 @Entity
-@Table(name = "SEGT_ROLES")
+@Table(schema=OrionBusinessConstants.ORION_DBSCHEMA, name = "SEGT_ROLES")
 @NamedQueries({
     @NamedQuery(name = "SegtRole.findAll", query = "SELECT s FROM SegtRole s")})
 public class SegtRole implements Serializable {

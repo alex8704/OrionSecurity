@@ -200,6 +200,11 @@
 			<artifactId>aspectjweaver</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		<!-- ******************************************* Spring, Vaadin and Shiro 
 			Dependencies END ******************************************* -->
 		<dependency>

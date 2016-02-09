@@ -9,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import co.com.binariasystems.commonsmodel.enumerated.Application;
 import co.com.binariasystems.fmw.annotation.Dependency;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.Init;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController;
@@ -30,7 +31,6 @@ import co.com.binariasystems.orion.model.dto.ApplicationDTO;
 import co.com.binariasystems.orion.model.dto.ModuleDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
 import co.com.binariasystems.orion.model.dto.RoleDTO;
-import co.com.binariasystems.orion.model.enumerated.Application;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;

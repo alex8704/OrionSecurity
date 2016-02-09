@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import co.com.binariasystems.fmw.annotation.Dependency;
-import co.com.binariasystems.fmw.util.ObjectUtils;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.Init;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.UIEventHandler;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController;
@@ -24,10 +23,11 @@ import co.com.binariasystems.orion.business.bean.ResourceBean;
 import co.com.binariasystems.orion.model.dto.ApplicationDTO;
 import co.com.binariasystems.orion.model.dto.ModuleDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
-import co.com.binariasystems.orion.web.cruddto.Module;
 import co.com.binariasystems.orion.web.uievent.AdmResourceViewEvent;
+import co.com.binariasystems.orion.web.uievent.CreateModuleWindowEvent;
 import co.com.binariasystems.orion.web.utils.OrionWebUtils;
 import co.com.binariasystems.orion.web.view.admin.AdmResourceView;
+import co.com.binariasystems.orion.web.view.admin.CreateModuleWindow;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -49,7 +49,7 @@ public class AdmModuleViewController extends AbstractViewController {
 	@ViewField private TreeTable 							moduleHierarchyTree;
 	@ViewField private Table 								resourceTable;
 	@ViewField private ObjectProperty<ApplicationDTO> 		applicationProperty;
-	@ViewField private ObjectProperty<Module> 				parentModuleProperty;
+	@ViewField private ObjectProperty<ModuleDTO>			parentModuleProperty;
 	@ViewField private BeanItemContainer<ApplicationDTO> 	applicationDS;
 	@ViewField private BeanItemContainer<ModuleDTO> 		moduleHierarchyItems;
 	@ViewField private ContainerHierarchicalWrapper 		moduleHierarchyDS;
@@ -60,6 +60,7 @@ public class AdmModuleViewController extends AbstractViewController {
 															editResourceBtn, 
 															deleteModuleBtn, 
 															deleteResourceBtn;
+	@ViewField private CreateModuleWindow					editModuleWindow;
 	@ViewField private Map<String, String>					notificationMsgMapping;
 	@ViewField private Map<Button, MessageDialog>			confirmMsgDialogMapping;
 	
@@ -133,7 +134,7 @@ public class AdmModuleViewController extends AbstractViewController {
 			resourceTableDS.addAll(resourceBean.findByApplicationAndNullModule(applicationProperty.getValue()));
 		else if(moduleHierarchyTree.getValue() == null && parentModuleProperty.getValue() != null)
 			resourceTableDS.addAll(resourceBean.findByApplicationAndModule(applicationProperty.getValue(), 
-					ObjectUtils.transferProperties(parentModuleProperty.getValue(), ModuleDTO.class)));
+					parentModuleProperty.getValue()));
 		else if(moduleHierarchyTree.getValue() != null)
 			resourceTableDS.addAll(resourceBean.findByApplicationAndModule(applicationProperty.getValue(), (ModuleDTO)moduleHierarchyTree.getValue()));
 	}
@@ -150,7 +151,7 @@ public class AdmModuleViewController extends AbstractViewController {
 	private void reloadModulesTree(){
 		moduleHierarchyTree.removeAllItems();
 		if(applicationProperty.getValue() == null) return;
-		ModuleDTO parentModule = ObjectUtils.transferProperties(parentModuleProperty.getValue(), ModuleDTO.class);
+		ModuleDTO parentModule = parentModuleProperty.getValue();
 		for(ModuleDTO module : moduleBean.findByApplicationAndParentModule(applicationProperty.getValue(), parentModule))
 			addModuleTreeItem(module);
 	}
@@ -176,31 +177,48 @@ public class AdmModuleViewController extends AbstractViewController {
 		showSuccessOperationNotification(newResourceBtn.getData().toString());
 	}
 	
+	@UIEventHandler
+	public void onModuleWindowEvent(CreateModuleWindowEvent event){
+		if("cancel".equals(event.getId()))return;
+		ModuleDTO module = event.get("module", ModuleDTO.class);
+		reloadModulesTree();
+		if(moduleHierarchyDS.containsId(module))
+			moduleHierarchyTree.select(module);
+		showSuccessOperationNotification(newModuleBtn.getData().toString());
+	}
+	
 	private void newModuleBtnClickListener(){
-		LOGGER.info("Clicked newModuleBtn");
+		ModuleDTO module = new ModuleDTO();
+		module.setApplicationId(applicationProperty.getValue());
+		ModuleDTO parentModule = parentModuleProperty.getValue();
+		parentModule = moduleHierarchyTree.getValue() != null ? (ModuleDTO)moduleHierarchyTree.getValue() : parentModule;
+		module.setParentModule(parentModule);
+		editModuleWindow.show(module);
 	}
 	private void newResourceBtnClickListener(){
 		openAdmResourcePopup(newResourceBtn.getData().toString());
 	}
 	private void editModuleBtnClickListener(){
-		LOGGER.info("Clicked editModuleBtn");
+		editModuleWindow.show((ModuleDTO)moduleHierarchyTree.getValue());
 	}
 	private void editResourceBtnClickListener(){
 		openAdmResourcePopup(editResourceBtn.getData().toString());
 	}
 	private void deleteModuleBtnClickListener(){
 		moduleBean.delete((ModuleDTO)moduleHierarchyTree.getValue());
+		reloadModulesTree();
 		showSuccessOperationNotification(deleteModuleBtn.getData().toString());
 	}
 	private void deleteResourceBtnClickListener(){
 		resourceBean.delete((ResourceDTO)resourceTable.getValue());
+		reloadResourcesTable();
 		showSuccessOperationNotification(deleteResourceBtn.getData().toString());
 	}
 	
 	private void openAdmResourcePopup(String action){
 		Map<String, String> requestParameters = new HashMap<String, String>();
 		ApplicationDTO application = applicationProperty.getValue();
-		ModuleDTO parentModule = ObjectUtils.transferProperties(parentModuleProperty.getValue(), ModuleDTO.class);
+		ModuleDTO parentModule = parentModuleProperty.getValue();
 		ModuleDTO module = moduleHierarchyTree.getValue() != null ? (ModuleDTO)moduleHierarchyTree.getValue() : parentModule;
 		ResourceDTO resource = (ResourceDTO) resourceTable.getValue();
 		requestParameters.put("applicationId", String.valueOf(application.getApplicationId()));
