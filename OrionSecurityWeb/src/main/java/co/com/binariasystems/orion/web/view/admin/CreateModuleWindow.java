@@ -134,6 +134,8 @@ public class CreateModuleWindow extends Window {
 		clickListener = new CreateModuleWindowClickListener();
 		for(Button button : confirmMsgDialogMapping.keySet())
 			button.addClickListener(clickListener);
+		for(MessageDialog messageDialog : confirmMsgDialogMapping.values())
+			messageDialog.addYesClickListener(clickListener);
 	}
 	
 	public void show(ModuleDTO moduleDTO){
@@ -143,6 +145,7 @@ public class CreateModuleWindow extends Window {
 	
 	private void onLoad(){
 		resetCurrentModule(moduleDTO);
+		toggleActionButtonsState();
 		form.initFocus();
 	}
 	

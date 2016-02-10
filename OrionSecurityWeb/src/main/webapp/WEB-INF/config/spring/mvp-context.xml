@@ -55,15 +55,17 @@
 	<bean id="dispatchEventInterceptor" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.DispatchEventInterceptor">
 		<property name="securityManager" ref="securityManager" />
 	</bean>
+	
+	<bean id="eventBus" class="co.com.binariasystems.fmw.vweb.mvp.eventbus.EventBusImpl" scope="session">
+		<aop:scoped-proxy />
+	</bean>
 
 	<bean id="uriFragmentChangeListener" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.MVPURIFragmentChangeListener" scope="session">
 		<aop:scoped-proxy />
 		<property name="viewDispatcher">
 			<bean class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.ViewDispatcherImpl">
 				<property name="viewProvider" ref="viewProvider" />
-				<property name="eventBus">
-					<bean class="co.com.binariasystems.fmw.vweb.mvp.eventbus.EventBusImpl" />
-				</property>
+				<property name="eventBus" ref="eventBus"/>
 			</bean>
 		</property>
 	</bean>
