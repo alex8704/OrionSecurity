@@ -31,6 +31,7 @@ import co.com.binariasystems.orion.web.view.admin.CreateModuleWindow;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.Property.ValueChangeNotifier;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ContainerHierarchicalWrapper;
 import com.vaadin.data.util.ObjectProperty;
@@ -64,6 +65,7 @@ public class AdmModuleViewController extends AbstractViewController {
 	@ViewField private Map<String, String>					notificationMsgMapping;
 	@ViewField private Map<Button, MessageDialog>			confirmMsgDialogMapping;
 	
+	
 	@Dependency
 	private ApplicationBean 								applicationBean;
 	@Dependency
@@ -72,23 +74,15 @@ public class AdmModuleViewController extends AbstractViewController {
 	private ResourceBean 									resourceBean;
 	
 	private ApplicationDTO 									lastSelectedApp;
-	private AdmModuleViewValueChangeListener 				valueChangeListener;
-	private AdmModuleViewClickListener 						clickListener;
+	private AdmModuleViewEventListenerListener 				eventListener;
 	
 	@Init
 	public void init(){
-		valueChangeListener = new AdmModuleViewValueChangeListener();
-		clickListener = new AdmModuleViewClickListener();
-		applicationProperty.addValueChangeListener(valueChangeListener);
-		parentModuleProperty.addValueChangeListener(valueChangeListener);
-		moduleHierarchyTree.addValueChangeListener(valueChangeListener);
-		resourceTable.addValueChangeListener(valueChangeListener);
-		newModuleBtn.addClickListener(clickListener);
-		newResourceBtn.addClickListener(clickListener);
-		editModuleBtn.addClickListener(clickListener);
-		editResourceBtn.addClickListener(clickListener);
+		eventListener = new AdmModuleViewEventListenerListener();
+		eventListener.listenClickEvent(newModuleBtn, newResourceBtn, editModuleBtn, editResourceBtn);
+		eventListener.listenValeChangeEvent(applicationProperty, parentModuleProperty, moduleHierarchyTree, resourceTable);
 		for(MessageDialog messageDialog : confirmMsgDialogMapping.values())
-			messageDialog.addYesClickListener(clickListener);
+			messageDialog.addYesClickListener(eventListener);
 	}
 	
 	@OnLoad
@@ -172,8 +166,7 @@ public class AdmModuleViewController extends AbstractViewController {
 		if("cancel".equals(event.getId()))return;
 		ResourceDTO resource = event.get("resource", ResourceDTO.class);
 		reloadResourcesTable();
-		if(resourceTableDS.containsId(resource))
-			resourceTable.select(resource);
+		resourceTable.select(resource);
 		showSuccessOperationNotification(newResourceBtn.getData().toString());
 	}
 	
@@ -182,8 +175,8 @@ public class AdmModuleViewController extends AbstractViewController {
 		if("cancel".equals(event.getId()))return;
 		ModuleDTO module = event.get("module", ModuleDTO.class);
 		reloadModulesTree();
-		if(moduleHierarchyDS.containsId(module))
-			moduleHierarchyTree.select(module);
+		expandModuleTreeItemRecursively(module);
+		moduleHierarchyTree.select(module);
 		showSuccessOperationNotification(newModuleBtn.getData().toString());
 	}
 	
@@ -205,8 +198,11 @@ public class AdmModuleViewController extends AbstractViewController {
 		openAdmResourcePopup(editResourceBtn.getData().toString());
 	}
 	private void deleteModuleBtnClickListener(){
+		ModuleDTO parent = ((ModuleDTO)moduleHierarchyTree.getValue()).getParentModule();
 		moduleBean.delete((ModuleDTO)moduleHierarchyTree.getValue());
 		reloadModulesTree();
+		if(parent != null)
+			expandModuleTreeItemRecursively(parent);
 		showSuccessOperationNotification(deleteModuleBtn.getData().toString());
 	}
 	private void deleteResourceBtnClickListener(){
@@ -228,12 +224,29 @@ public class AdmModuleViewController extends AbstractViewController {
 		OrionWebUtils.modalPopup(OrionWebUtils.getViewURL(AdmResourceView.class), requestParameters);
 	}
 	
-	
 	private void showSuccessOperationNotification(String action){
 		Notification.show(notificationMsgMapping.get(action), Type.TRAY_NOTIFICATION);
 	}
 	
-	private class AdmModuleViewValueChangeListener implements ValueChangeListener{
+	private void expandModuleTreeItemRecursively(ModuleDTO module){
+		ModuleDTO treeNode = module;
+		while((treeNode = treeNode.getParentModule()) != null)
+			moduleHierarchyTree.setCollapsed(treeNode, false);
+	}
+	
+	/*
+	 * Clase Interna Privada para el manejo de todos los eventos de los componentes de Interfaz de Usuario
+	 */
+	private class AdmModuleViewEventListenerListener implements ValueChangeListener, ClickListener{
+		public void listenClickEvent(Button... buttons){
+			for(Button button : buttons)
+				button.addClickListener(this);
+		}
+		public void listenValeChangeEvent(ValueChangeNotifier... valueChangeNotifiers){
+			for(ValueChangeNotifier valueChangeNotifier : valueChangeNotifiers)
+				valueChangeNotifier.addValueChangeListener(this);
+		}
+		
 		@Override public void valueChange(ValueChangeEvent event) {
 			try{
 				if(applicationProperty.equals(event.getProperty()))
@@ -248,9 +261,7 @@ public class AdmModuleViewController extends AbstractViewController {
 				MessageDialog.showExceptions(ex, LOGGER);
 			}
 		}
-	}
-	
-	private class AdmModuleViewClickListener implements ClickListener{
+		
 		@Override public void buttonClick(ClickEvent event) {
 			try{
 				if(newModuleBtn.equals(event.getButton()))
@@ -269,6 +280,6 @@ public class AdmModuleViewController extends AbstractViewController {
 				MessageDialog.showExceptions(ex, LOGGER);
 			}
 		}
-		
+
 	}
 }

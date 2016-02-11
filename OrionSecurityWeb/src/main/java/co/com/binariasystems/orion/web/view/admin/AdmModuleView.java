@@ -30,7 +30,9 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ContainerHierarchicalWrapper;
 import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.event.Action;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -78,7 +80,12 @@ public class AdmModuleView extends AbstractView{
 	private ObjectProperty<Integer> 			auxAplicationProperty;
 	private Map<String, String>					notificationMsgMapping;
 	private Map<Button, MessageDialog>			confirmMsgDialogMapping;
-	private AdmModuleViewClickListener		clickListener;
+	private AdmModuleEventListener				eventListener;
+	private Action								newModuleAction,
+												deleteModuleAction,
+												editModuleAction,
+												deleteResourceAction,
+												editResourceAction;
 	
 	/**
 	 * Crea los diferente componentes de la interfaz de usuario
@@ -145,7 +152,12 @@ public class AdmModuleView extends AbstractView{
 		auxAplicationProperty = new ObjectProperty<Integer>(null, Integer.class);
 		notificationMsgMapping = new HashMap<String, String>();
 		confirmMsgDialogMapping = new HashMap<Button, MessageDialog>();
-		clickListener = new AdmModuleViewClickListener();
+		eventListener = new AdmModuleEventListener();
+		newModuleAction = new Action(conventionCaption("newModuleAction"));
+		deleteModuleAction = new Action(conventionCaption("deleteModuleAction"));
+		editModuleAction = new Action(conventionCaption("editModuleAction"));
+		deleteResourceAction = new Action(conventionCaption("deleteResourceAction"));
+		editResourceAction = new Action(conventionCaption("editResourceAction"));
 		
 		moduleHierarchyTree.setContainerDataSource(moduleHierarchyDS);
 		resourceTable.setContainerDataSource(resourceTableDS);
@@ -215,15 +227,47 @@ public class AdmModuleView extends AbstractView{
 		confirmMsgDialogMapping.put(deleteModuleBtn, new MessageDialog(deleteModuleBtn.getCaption(), getText("common.message.deletion_confirmation.question"), Type.QUESTION));
 		confirmMsgDialogMapping.put(deleteResourceBtn, new MessageDialog(deleteResourceBtn.getCaption(), getText("common.message.deletion_confirmation.question"), Type.QUESTION));
 		
+		moduleHierarchyTree.addActionHandler(eventListener);
+		resourceTable.addActionHandler(eventListener);
 		for(Button button : confirmMsgDialogMapping.keySet())
-			button.addClickListener(clickListener);
+			button.addClickListener(eventListener);
 
 	}
 	
-	private class AdmModuleViewClickListener implements ClickListener{
+	private Action[] getModuleTreeActions(){
+		return new Action[]{newModuleAction, editModuleAction, deleteModuleAction};
+	}
+	
+	private Action[] getResourceTableActions(){
+		return new Action[]{editResourceAction, deleteResourceAction};
+	}
+	
+	private class AdmModuleEventListener implements ClickListener, Action.Handler{
 		@Override public void buttonClick(ClickEvent event) {
 			if(confirmMsgDialogMapping.containsKey(event.getButton()))
 				confirmMsgDialogMapping.get(event.getButton()).show();
+		}
+
+		@Override public Action[] getActions(Object target, Object sender) {
+			if(target == null) return null;
+			if(moduleHierarchyTree.equals(sender))
+				return getModuleTreeActions();
+			return getResourceTableActions();
+		}
+
+		@Override public void handleAction(Action action, Object sender, Object target) {
+			AbstractSelect targetTable = moduleHierarchyTree.equals(sender) ? moduleHierarchyTree : resourceTable;
+			targetTable.select(target);
+			if(newModuleAction.equals(action))
+				newModuleBtn.click();
+			if(editModuleAction.equals(action))
+				editModuleBtn.click();
+			if(deleteModuleAction.equals(action))
+				confirmMsgDialogMapping.get(deleteModuleBtn).show();
+			if(editResourceAction.equals(action))
+				editResourceBtn.click();
+			if(deleteResourceAction.equals(action))
+				confirmMsgDialogMapping.get(deleteResourceBtn).show();
 		}
 		
 	}

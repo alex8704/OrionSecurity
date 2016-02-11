@@ -154,6 +154,7 @@ public class CreateModuleWindow extends Window {
 	}
 	
 	private void resetCurrentModule(ModuleDTO module){
+		fieldGroup.setItemDataSource(moduleDTO);
 		try {
 			VWebUtils.resetBeanItemDS(fieldGroup.getItemDataSource(), module);
 		} catch (ReflectiveOperationException e) {
