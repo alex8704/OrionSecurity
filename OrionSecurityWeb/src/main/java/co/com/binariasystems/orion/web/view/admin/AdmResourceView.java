@@ -200,11 +200,20 @@ public class AdmResourceView extends AbstractView {
 		notificationMsgMapping.put(deleteBtn.getData().toString(), getText("common.message.success_complete_deletion.notification"));
 		notificationMsgMapping.put(reorganizeBtn.getData().toString(), getText("common.message.success_complete_reordering.notification"));
 		
-		confirmMsgDialogMapping.put(saveBtn, new MessageDialog(saveBtn.getCaption(), getText("common.message.creation_confirmation.question"), Type.QUESTION));
-		confirmMsgDialogMapping.put(editBtn, new MessageDialog(editBtn.getCaption(), getText("common.message.edition_confirmation.question"), Type.QUESTION));
-		confirmMsgDialogMapping.put(deleteBtn, new MessageDialog(deleteBtn.getCaption(), getText("common.message.deletion_confirmation.question"), Type.QUESTION));
-		confirmMsgDialogMapping.put(reorganizeBtn, new MessageDialog(reorganizeBtn.getCaption(), getText("common.message.reorderin_confirmation.question"), Type.QUESTION));
-		confirmMsgDialogMapping.put(cancelBtn, new MessageDialog(cancelBtn.getCaption(), getText("common.message.cancelation_confirmation.question"), Type.QUESTION));
+		confirmMsgDialogMapping.put(saveBtn, new MessageDialog(getText("common.message.creation_confirmation.title"), 
+				getText("common.message.creation_confirmation.question"), Type.QUESTION));
+		
+		confirmMsgDialogMapping.put(editBtn, new MessageDialog(getText("common.message.edition_confirmation.title"), 
+				getText("common.message.edition_confirmation.question"), Type.QUESTION));
+		
+		confirmMsgDialogMapping.put(deleteBtn, new MessageDialog(getText("common.message.deletion_confirmation.title"), 
+				getText("common.message.deletion_confirmation.question"), Type.QUESTION));
+		
+		confirmMsgDialogMapping.put(reorganizeBtn, new MessageDialog(getText("common.message.reorderin_confirmation.title"), 
+				getText("common.message.reorderin_confirmation.question"), Type.QUESTION));
+		
+		confirmMsgDialogMapping.put(cancelBtn, new MessageDialog(getText("common.message.cancelation_confirmation.title"), 
+				getText("common.message.cancelation_confirmation.question"), Type.QUESTION));
 		
 		for(Button button : confirmMsgDialogMapping.keySet())
 			button.addClickListener(clickListener);

@@ -1,8 +1,8 @@
 package co.com.binariasystems.orion.business.utils;
 
 public interface OrionBusinessConstants {
-	final String APPLICATION_NAME_PROPERTY = "Orion.applicationName";
-	final String APPLICATION_VERSION_PROPERTY = "Orion.applicationVersion";
-	final String MAIN_DATASOURCE_PROPERTY = "entityManagerFactory.dataSourceName";
+	final String APP_NAME_CONFPROPERTY = "Orion.applicationName";
+	final String APP_VERSION_CONFPROPERTY = "Orion.applicationVersion";
+	final String MAIN_DSOURCE_CONFPROPERTY = "entityManagerFactory.dataSourceName";
 	final String ORION_DBSCHEMA = "ORION";
 }

@@ -26,14 +26,11 @@
 	
 	<bean id="asyncExceptionHandler" class="${application.asynExceptionHandlerClass}"/>
 	
+	<util:properties id="applicationConfigProperties" location="classpath:configuration.properties,classpath:javamail.properties">
+	</util:properties>
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations">
-			<list>
-				<value>classpath:configuration.properties</value>
-				<value>classpath:javamail.properties</value>
-			</list>
-		</property>
+		<property name="properties" ref="applicationConfigProperties"/>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
@@ -111,6 +108,7 @@
 	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 	
 	<jpa:repositories base-package="co.com.binariasystems.orion.business.dao" named-queries-location="${repositoryCfg.named_queries_location}"/>
+	<jpa:repositories base-package="co.com.binariasystems.mastercentral.shared.business.dao" named-queries-location="${masterRepositoryCfg.named_queries_location}"/>
 	
 	<!-- **********************************************************************************************************
 									JAVAMAIL-VELOCITY MECHANISM CONFIGURATION

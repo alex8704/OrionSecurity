@@ -58,9 +58,6 @@ public class SegtUser implements Serializable {
     @Embedded
     private SegtUserCredentials credentials;
     @Size(max = 15)
-    @Column(name = "COD_TIPO_IDENTIFICACION")
-    private String identificationTypeCode;
-    @Size(max = 15)
     @Column(name = "NUM_IDENTIFICACION")
     private String identificationNumber;
     @Basic(optional = false)
@@ -93,7 +90,7 @@ public class SegtUser implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "ES_ACTIVO")
     private SN2Boolean isActive;
-    @JoinTable(name = "SEGT_ROLES_X_USUARIO", joinColumns = {
+    @JoinTable(schema=OrionBusinessConstants.ORION_DBSCHEMA, name = "SEGT_ROLES_X_USUARIO", joinColumns = {
     		@JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID_USUARIO")}, inverseJoinColumns = {
     		@JoinColumn(name = "ID_ROL", referencedColumnName = "ID_ROL")})
         @ManyToMany
@@ -150,20 +147,6 @@ public class SegtUser implements Serializable {
 	public void setCredentials(SegtUserCredentials credentials) {
 		this.credentials = credentials;
 	}
-
-	/**
-     * @return the identificationTypeCode
-     */
-    public String getIdentificationTypeCode() {
-        return identificationTypeCode;
-    }
-
-    /**
-     * @param identificationTypeCode the identificationTypeCode to set
-     */
-    public void setIdentificationTypeCode(String identificationTypeCode) {
-        this.identificationTypeCode = identificationTypeCode;
-    }
 
     /**
      * @return the identificationNumber

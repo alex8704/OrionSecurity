@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import co.com.binariasystems.commonsmodel.constants.SystemConstants;
 import co.com.binariasystems.fmw.constants.FMWConstants;
 import co.com.binariasystems.fmw.entity.util.FMWEntityConstants;
 import co.com.binariasystems.fmw.ioc.IOCHelper;
@@ -26,16 +27,16 @@ import co.com.binariasystems.orion.web.utils.OrionWebConstants;
 
 public class OrionContextListener implements ServletContextListener, OrionWebConstants{
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrionContextListener.class);
-	private static final String PARAM_CREATE_DATAMODEL = OrionContextListener.class.getSimpleName()+".createDataModelIfNotExist";
+	//private static final String PARAM_CREATE_DATAMODEL = OrionContextListener.class.getSimpleName()+".createDataModelIfNotExist";
 
 	/**
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
     public void contextInitialized(ServletContextEvent sce)  {
     	PropertiesManager properties = PropertiesManager.forPath("/configuration.properties");
-    	System.setProperty(OrionBusinessConstants.APPLICATION_VERSION_PROPERTY, properties.getString(OrionBusinessConstants.APPLICATION_VERSION_PROPERTY));
-    	System.setProperty(OrionBusinessConstants.APPLICATION_NAME_PROPERTY, properties.getString(OrionBusinessConstants.APPLICATION_NAME_PROPERTY));
-    	System.setProperty(OrionBusinessConstants.MAIN_DATASOURCE_PROPERTY, properties.getString(OrionBusinessConstants.MAIN_DATASOURCE_PROPERTY));
+    	System.setProperty(SystemConstants.APP_VERSION_PROP, properties.getString(OrionBusinessConstants.APP_VERSION_CONFPROPERTY));
+    	System.setProperty(SystemConstants.APP_NAME_PROP, properties.getString(OrionBusinessConstants.APP_NAME_CONFPROPERTY));
+    	System.setProperty(SystemConstants.MAIN_DSOURCE_PROP, properties.getString(OrionBusinessConstants.MAIN_DSOURCE_CONFPROPERTY));
     	
     	IOCHelper.setProvider(SpringIOCProvider.configure(WebApplicationContextUtils.getRequiredWebApplicationContext(sce.getServletContext())));
     	DBUtil.init(IOCHelper.getBean(OrionBusinessUtils.getMainDataSourceName(), DataSource.class));

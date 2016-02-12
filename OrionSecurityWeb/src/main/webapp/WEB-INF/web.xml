@@ -20,11 +20,6 @@
 		<param-value>/WEB-INF/config/shiro/shiro.ini</param-value>
 	</context-param>
 	<context-param>
-		<description>Indica si se debe crear automaticamente el modelo de datos si no existe</description>
-		<param-name>OrionContextListener.createDataModelIfNotExist</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<context-param>
 		<param-name>hsqlRunner.serverConfigFile</param-name>
 		<param-value>/co/com/binariasystems/orion/web/resources/properties/hsqlServerConfig.properties</param-value>
 	</context-param>
@@ -38,9 +33,9 @@
 	<listener>
 		<listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
 	</listener>
-<!-- 	<listener> -->
-<!-- 		<listener-class>co.com.binariasystems.fmw.vweb.servlet.HSQLSeverRunListener</listener-class> -->
-<!-- 	</listener> -->
+	<listener>
+		<listener-class>co.com.binariasystems.fmw.vweb.servlet.HSQLSeverRunListener</listener-class>
+	</listener>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>

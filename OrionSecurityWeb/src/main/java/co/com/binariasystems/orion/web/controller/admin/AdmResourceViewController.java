@@ -190,8 +190,8 @@ public class AdmResourceViewController extends AbstractViewController{
 	}
 	
 	private void cleanCurrentResource(){
-		currentResource = new ResourceDTO();
-		fieldGroup.setItemDataSource(currentResource);
+		currentResource = null;
+		resetResourceForm();
 	}
 	
 	private void addModuleTreeItem(ModuleDTO module){

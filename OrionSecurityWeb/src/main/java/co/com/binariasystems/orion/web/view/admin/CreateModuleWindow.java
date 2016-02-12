@@ -59,7 +59,7 @@ public class CreateModuleWindow extends Window {
     private ClickListener clickListener;
     private BeanFieldGroup<ModuleDTO> fieldGroup;
     private Map<Button, MessageDialog> confirmMsgDialogMapping;
-    private ModuleDTO moduleDTO;
+    private ModuleDTO moduleDTO = new ModuleDTO();
     private ModuleBean moduleBean;
     
     @Override
@@ -68,7 +68,6 @@ public class CreateModuleWindow extends Window {
     	if(form == null)
     		init();
     	center();
-    	onLoad();
     }
     
     @Override
@@ -101,7 +100,7 @@ public class CreateModuleWindow extends Window {
 			setContent(form);
 			
 			fieldGroup.setBuffered(false);
-			fieldGroup.setItemDataSource(new ModuleDTO());
+			fieldGroup.setItemDataSource(moduleDTO);
 			fieldGroup.bindMemberFields(this);
 			
 			saveBtn.withIcon(FontAwesome.SAVE)
@@ -115,10 +114,21 @@ public class CreateModuleWindow extends Window {
 			
 			applicationTxt.setReadOnly(true);
 			parentModuleTxt.setReadOnly(true);
-			confirmMsgDialogMapping.put(saveBtn, new MessageDialog(saveBtn.getCaption(), getText("common.message.creation_confirmation.question"), Type.QUESTION));
-			confirmMsgDialogMapping.put(editBtn, new MessageDialog(editBtn.getCaption(), getText("common.message.edition_confirmation.question"), Type.QUESTION));
-			confirmMsgDialogMapping.put(cancelBtn, new MessageDialog(cancelBtn.getCaption(), getText("common.message.cancelation_confirmation.question"), Type.QUESTION));
+			nameTxt.withoutUpperTransform();
+			descriptionTxt.withoutUpperTransform();
+			indexTxt.withoutUpperTransform();
+			
+			confirmMsgDialogMapping.put(saveBtn, new MessageDialog(getText("common.message.creation_confirmation.title"), 
+					getText("common.message.creation_confirmation.question"), Type.QUESTION));
+			
+			confirmMsgDialogMapping.put(editBtn, new MessageDialog(getText("common.message.edition_confirmation.title"), 
+					getText("common.message.edition_confirmation.question"), Type.QUESTION));
+			
+			confirmMsgDialogMapping.put(cancelBtn, new MessageDialog(getText("common.message.cancelation_confirmation.title"), 
+					getText("common.message.cancelation_confirmation.question"), Type.QUESTION));
+			
 			setWidth(750, Unit.PIXELS);
+			setResizable(false);
 			setModal(true);
 			MVPUtils.applyConventionStringsForView(this, OrionWebConstants.ADMIN_VIEW_MESSAGES);
 			MVPUtils.applyValidatorsForView(this);
@@ -138,13 +148,13 @@ public class CreateModuleWindow extends Window {
 			messageDialog.addYesClickListener(clickListener);
 	}
 	
-	public void show(ModuleDTO moduleDTO){
-		setModuleDTO(moduleDTO);
+	public void show(ModuleDTO module){
 		UI.getCurrent().addWindow(this);
+		resetCurrentModule(module);
+		onLoad();
 	}
 	
 	private void onLoad(){
-		resetCurrentModule(moduleDTO);
 		toggleActionButtonsState();
 		form.initFocus();
 	}
@@ -154,12 +164,7 @@ public class CreateModuleWindow extends Window {
 	}
 	
 	private void resetCurrentModule(ModuleDTO module){
-		fieldGroup.setItemDataSource(moduleDTO);
-		try {
-			VWebUtils.resetBeanItemDS(fieldGroup.getItemDataSource(), module);
-		} catch (ReflectiveOperationException e) {
-			MessageDialog.showExceptions(e);
-		}
+		VWebUtils.resetBeanItemDS(fieldGroup.getItemDataSource(), module);
 	}
 	
 	private void toggleActionButtonsState(){
@@ -169,28 +174,21 @@ public class CreateModuleWindow extends Window {
 	
 	private void saveBtnClick() throws FormValidationException{
 		form.validate();
-		ModuleDTO module = moduleBean.save(moduleDTO);
-		notifyPopupEvent(saveBtn.getData().toString(), module);
+		notifyPopupEvent((String)saveBtn.getData(), moduleBean.save(moduleDTO));
 	}
 	
 	private void editBtnClick() throws FormValidationException{
 		form.validate();
-		ModuleDTO module = moduleBean.save(moduleDTO);
-		notifyPopupEvent(editBtn.getData().toString(), module);
+		notifyPopupEvent((String)editBtn.getData(), moduleBean.save(moduleDTO));
 	}
 	
 	private void cancelBtnClick(){
-		notifyPopupEvent(cancelBtn.getData().toString(), null);
+		notifyPopupEvent((String)cancelBtn.getData(), moduleDTO);
 	}
 	
-	private void notifyPopupEvent(String eventId, ModuleDTO module){
-		fireEvent(new CreateModuleWindowEvent(eventId).set("module", module));
+	private void notifyPopupEvent(String eventId, ModuleDTO targetModule){
+		fireEvent(new CreateModuleWindowEvent(eventId).set("module", targetModule));
 		close();
-	}
-	
-	
-	private void setModuleDTO(ModuleDTO moduleDTO){
-		this.moduleDTO = moduleDTO;
 	}
 	
 	private String getText(String key){

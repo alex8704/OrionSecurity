@@ -21,7 +21,7 @@
 		<value>co.com.binariasystems.orion.web.view</value>
 		<value>co.com.binariasystems.orion.web.controller</value>
 		<value>co.com.binariasystems.orion.model.dto</value>
-		<value>co.com.binariasystems.mastercentral.business.dto</value>
+		<value>co.com.binariasystems.mastercentral.shared.business.dto</value>
 	</util:list>
 
 	<bean id="defaultViewInstanceCreator" class="co.com.binariasystems.fmw.vweb.mvp.dispatcher.DefaultViewInstanceCreator">

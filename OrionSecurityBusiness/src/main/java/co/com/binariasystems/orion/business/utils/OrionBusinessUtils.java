@@ -1,5 +1,6 @@
 package co.com.binariasystems.orion.business.utils;
 
+import co.com.binariasystems.commonsmodel.constants.SystemConstants;
 import co.com.binariasystems.fmw.constants.FMWConstants;
 import co.com.binariasystems.fmw.ioc.IOCHelper;
 import co.com.binariasystems.fmw.security.crypto.CredentialsCrypto;
@@ -10,19 +11,19 @@ import co.com.binariasystems.fmw.security.crypto.MatchingRequest;
 import co.com.binariasystems.fmw.security.crypto.impl.EncryptionResult;
 import co.com.binariasystems.fmw.util.messagebundle.PropertiesManager;
 
-public class OrionBusinessUtils implements OrionBusinessConstants {
+public class OrionBusinessUtils implements OrionBusinessConstants, SystemConstants {
 	private static PropertiesManager configProperties;
 	private static CredentialsCrypto credentialsCrypto;
 	public static String getApplicationName(){
-		return System.getProperty(APPLICATION_NAME_PROPERTY);
+		return System.getProperty(APP_NAME_PROP);
 	}
 	
 	public static String getApplicationVersion(){
-		return System.getProperty(APPLICATION_VERSION_PROPERTY);
+		return System.getProperty(APP_VERSION_PROP);
 	}
 	
 	public static String getMainDataSourceName(){
-		return System.getProperty(MAIN_DATASOURCE_PROPERTY);
+		return System.getProperty(MAIN_DSOURCE_PROP);
 	}
 	
 	public static PropertiesManager getConfigProperties(){

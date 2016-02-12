@@ -11,6 +11,7 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,10 +49,10 @@ public class SegtModule implements Serializable {
     @Column(name = "DESCRIPCION")
     private String description;
     @JoinColumn(name = "ID_MODULO_PADRE", referencedColumnName = "ID_MODULO")
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private SegtModule parentModule;
     @JoinColumn(name = "ID_APLICACION", referencedColumnName = "ID_APLICACION")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch=FetchType.EAGER)
     private SegtApplication applicationId;
     @Column(name = "POSICION")
     private Integer index;

@@ -42,8 +42,6 @@ public final class UserSpecifications {
 					predicates.add(cb.equal(root.get(SegtUser_.emailAddress), user.getEmailAddress()));
 				if(user.getFullName() != null)
 					predicates.add(cb.like(root.get(SegtUser_.fullName), user.getFullName().replace(FMWEntityConstants.LIKE_SQLCOMPARING_COMIDIN_CHAR, "%")));
-				if(user.getIdentificationTypeCode() != null)
-					predicates.add(cb.equal(root.get(SegtUser_.identificationTypeCode), user.getIdentificationTypeCode()));
 				if(user.getIdentificationNumber() != null)
 					predicates.add(cb.equal(root.get(SegtUser_.identificationNumber), user.getIdentificationNumber()));
 				if(user.getIsActive() != null)

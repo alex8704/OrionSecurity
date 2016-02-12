@@ -1,6 +1,8 @@
 package co.com.binariasystems.orion.web.view.admin;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 import co.com.binariasystems.fmw.vweb.constants.UIConstants;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.Init;
@@ -12,9 +14,10 @@ import co.com.binariasystems.fmw.vweb.mvp.annotation.validation.StringLengthVali
 import co.com.binariasystems.fmw.vweb.mvp.views.AbstractView;
 import co.com.binariasystems.fmw.vweb.uicomponet.Dimension;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
+import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
+import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog.Type;
 import co.com.binariasystems.fmw.vweb.uicomponet.Pager;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
-import co.com.binariasystems.fmw.vweb.uicomponet.builders.ComboBoxBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.DateFieldBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.PasswordFieldBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.TextFieldBuilder;
@@ -31,11 +34,12 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.renderers.ImageRenderer;
 
 @View(url="/user", viewStringsByConventions=true, controller=AdmUserViewController.class)
@@ -66,8 +70,6 @@ public class AdmUserView extends AbstractView {
 	private DateFieldBuilder			lastAccessDateDf;
 	@PropertyId("blockingDate")
 	private DateFieldBuilder			blockingDateDf;
-	@PropertyId("identificationTypeCode")
-	private ComboBoxBuilder				identificationTypeCodeCmb;
 	@PropertyId("isActive")
 	private CheckBox					isActiveChk;
 	@PropertyId("isBlockedByMaxRetries")
@@ -81,16 +83,18 @@ public class AdmUserView extends AbstractView {
 	private ButtonBuilder				saveBtn,
 										editBtn,
 										searchBtn;
-	private HorizontalLayout 			lastFieldsLayout;
 	
+	private Map<String, String>				notificationMsgMapping;
+	private Map<Button, MessageDialog>		confirmMsgDialogMapping;
 	private BeanFieldGroup<UserDTO>		fieldGroup;
+	private UserDTO currentUser;
+	private AdmUserViewEventListener	eventListener;
 	
 	@ViewBuild
 	public Component build(){
 		form = new FormPanel(2);
 		loginAliasTxt = new TextFieldBuilder();
 		credentialsTxt = new PasswordFieldBuilder();
-		identificationTypeCodeCmb = new ComboBoxBuilder();
 		identificationNumberTxt = new TextFieldBuilder();
 		fullNameTxt = new TextFieldBuilder();
 		emailAddressTxt = new TextFieldBuilder();
@@ -106,17 +110,10 @@ public class AdmUserView extends AbstractView {
 		searchBtn = new ButtonBuilder();
 		userGrid = new Grid();
 		pager = new Pager<UserDTO, UserDTO>();
-		lastFieldsLayout = new HorizontalLayout();
 		addDataBinding();
-		
-		
-		lastFieldsLayout.addComponent(failedRetriesTxt);
-		lastFieldsLayout.addComponent(isActiveChk);
-		lastFieldsLayout.addComponent(isBlockedByMaxRetriesChk);
 		
 		form.add(loginAliasTxt, Dimension.percent(100))
 		.add(credentialsTxt, Dimension.percent(100))
-		.add(identificationTypeCodeCmb, Dimension.percent(100))
 		.add(identificationNumberTxt, Dimension.percent(100))
 		.add(fullNameTxt, Dimension.percent(100))
 		.add(emailAddressTxt, Dimension.percent(100))
@@ -124,7 +121,9 @@ public class AdmUserView extends AbstractView {
 		.add(lastAccessIPTxt, Dimension.percent(100))
 		.add(lastAccessDateDf, Dimension.percent(100))
 		.add(blockingDateDf, Dimension.percent(100))
-		.add(lastFieldsLayout, 2, Dimension.percent(100))
+		.add(failedRetriesTxt, Dimension.percent(100))
+		.add(isActiveChk, Dimension.percent(100))
+		.add(isBlockedByMaxRetriesChk, Dimension.percent(100))
 		.addEmptyRow()
 		.addCenteredOnNewRow(saveBtn, editBtn, searchBtn)
 		.addEmptyRow()
@@ -136,10 +135,14 @@ public class AdmUserView extends AbstractView {
 	
 	
 	private void addDataBinding(){
-		BeanItem<UserDTO> beanItem = new BeanItem<UserDTO>(new UserDTO(), UserDTO.class);
+		currentUser = new UserDTO();
+		BeanItem<UserDTO> beanItem = new BeanItem<UserDTO>(currentUser, UserDTO.class);
 		userGridItems = new BeanItemContainer<UserDTO>(UserDTO.class);
 		userGridDS = new GeneratedPropertyContainer(userGridItems);
 		fieldGroup = new BeanFieldGroup<UserDTO>(UserDTO.class);
+		notificationMsgMapping = new HashMap<String, String>();
+		confirmMsgDialogMapping = new HashMap<Button, MessageDialog>();
+		eventListener = new AdmUserViewEventListener();
 		
 		userGridDS.addGeneratedProperty("isBlockedByMaxRetries", new SN2BooleanPropertyGenerator());
 		userGridDS.addGeneratedProperty("isActive", new SN2BooleanPropertyGenerator());
@@ -156,11 +159,7 @@ public class AdmUserView extends AbstractView {
 	}
 	
 	@Init
-	public void init(){
-		lastFieldsLayout.setSpacing(true);
-		lastFieldsLayout.setComponentAlignment(isActiveChk, Alignment.MIDDLE_LEFT);
-		lastFieldsLayout.setComponentAlignment(isBlockedByMaxRetriesChk, Alignment.MIDDLE_LEFT);
-		
+	public void init(){		
 		failedRetriesTxt.withFullWidth();
 		isActiveChk.setWidth(100, Unit.PERCENTAGE);
 		isBlockedByMaxRetriesChk.setWidth(100, Unit.PERCENTAGE);
@@ -177,20 +176,20 @@ public class AdmUserView extends AbstractView {
 		loginAliasTxt
 		.required()
 		.withoutUpperTransform();
-		identificationTypeCodeCmb.required();
 		identificationNumberTxt.required()
 		.withoutUpperTransform();
 		fullNameTxt.required();
 		emailAddressTxt.withoutUpperTransform();
 		isoLanguajeCodeTxt.withoutUpperTransform();
 		
-		saveBtn.setIcon(FontAwesome.SAVE);
-		editBtn.setIcon(FontAwesome.EDIT);
-		searchBtn.setIcon(FontAwesome.SEARCH);
+		saveBtn.withData("create").withIcon(FontAwesome.SAVE);
+		editBtn.withData("edit")
+		.withIcon(FontAwesome.EDIT)
+		.disable();
+		searchBtn.withIcon(FontAwesome.SEARCH);
 		
 		userGrid.setColumns("userId",
 				"loginAlias",
-				"identificationTypeCode",
 				"identificationNumber",
 				"fullName",
 				"lastAccessDate",
@@ -214,6 +213,26 @@ public class AdmUserView extends AbstractView {
 				new GridUtils.SimpleStyleInfo("isBlockedByMaxRetries", UIConstants.CENTER_ALIGN_STYLE),
 				new GridUtils.SimpleStyleInfo("isActive", UIConstants.CENTER_ALIGN_STYLE)
 				));
+		
+		notificationMsgMapping.put(saveBtn.getData().toString(), getText("common.message.success_complete_creation.notification"));
+		notificationMsgMapping.put(editBtn.getData().toString(), getText("common.message.success_complete_edition.notification"));
+
+		confirmMsgDialogMapping.put(saveBtn, new MessageDialog(getText("common.message.creation_confirmation.title"), 
+				getText("common.message.creation_confirmation.question"), Type.QUESTION));
+		
+		confirmMsgDialogMapping.put(editBtn, new MessageDialog(getText("common.message.edition_confirmation.title"), 
+				getText("common.message.edition_confirmation.question"), Type.QUESTION));
+		
+		for(Button button : confirmMsgDialogMapping.keySet())
+			button.addClickListener(eventListener);
+		
+	}
+	
+	private class AdmUserViewEventListener implements ClickListener{
+		@Override public void buttonClick(ClickEvent event) {
+			if(confirmMsgDialogMapping.containsKey(event.getButton()))
+				confirmMsgDialogMapping.get(event.getButton()).show();
+		}
 		
 	}
 }

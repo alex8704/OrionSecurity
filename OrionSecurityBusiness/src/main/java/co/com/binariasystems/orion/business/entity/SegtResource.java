@@ -10,9 +10,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -56,16 +56,16 @@ public class SegtResource implements Serializable {
     @Size(max = 256)
     @Column(name = "DESCRIPCION")
     private String description;
-    @JoinTable(name = "SEGT_RECURSOS_X_ROLES", joinColumns = {
+    @JoinTable(schema=OrionBusinessConstants.ORION_DBSCHEMA, name = "SEGT_RECURSOS_X_ROLES", joinColumns = {
         @JoinColumn(name = "ID_RECURSO", referencedColumnName = "ID_RECURSO")}, inverseJoinColumns = {
         @JoinColumn(name = "ID_ROL", referencedColumnName = "ID_ROL")})
     @ManyToMany
     private List<SegtRole> authorizedRoles;
     @JoinColumn(name = "ID_MODULO", referencedColumnName = "ID_MODULO")
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private SegtModule module;
     @JoinColumn(name = "ID_APLICACION", referencedColumnName = "ID_APLICACION")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch=FetchType.EAGER)
     private SegtApplication application;
     @Column(name = "POSICION")
     private Integer index;

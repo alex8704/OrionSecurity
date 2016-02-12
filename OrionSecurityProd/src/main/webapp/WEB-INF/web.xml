@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-	version="3.1">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
 	<display-name>OrionSecurityWeb</display-name>
 
 	<!--******************************************************************************************************************************** 
@@ -23,9 +20,8 @@
 		<param-value>/WEB-INF/config/shiro/shiro.ini</param-value>
 	</context-param>
 	<context-param>
-		<description>Indica si se debe crear automaticamente el modelo de datos si no existe</description>
-		<param-name>OrionContextListener.createDataModelIfNotExist</param-name>
-		<param-value>true</param-value>
+		<param-name>hsqlRunner.serverConfigFile</param-name>
+		<param-value>/co/com/binariasystems/orion/web/resources/properties/hsqlServerConfig.properties</param-value>
 	</context-param>
 	<context-param>
 		<param-name>productionMode</param-name>
@@ -34,8 +30,12 @@
 
 	<!--******************************************************************************************************************************** 
 		Listeners de la Aplicacion ******************************************************************************************************************************** -->
-	<!-- <listener> <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class> 
-		</listener> -->
+	<listener>
+		<listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>co.com.binariasystems.fmw.vweb.servlet.HSQLSeverRunListener</listener-class>
+	</listener>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>

@@ -26,14 +26,11 @@
 	
 	<bean id="asyncExceptionHandler" class="${application.asynExceptionHandlerClass}"/>
 	
+	<util:properties id="applicationConfigProperties" location="classpath:configuration.properties,classpath:javamail.properties">
+	</util:properties>
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations">
-			<list>
-				<value>classpath:configuration.properties</value>
-				<value>classpath:javamail.properties</value>
-			</list>
-		</property>
+		<property name="properties" ref="applicationConfigProperties"/>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 

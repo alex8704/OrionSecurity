@@ -80,8 +80,9 @@ public class AdmModuleView extends AbstractView{
 	private ObjectProperty<Integer> 			auxAplicationProperty;
 	private Map<String, String>					notificationMsgMapping;
 	private Map<Button, MessageDialog>			confirmMsgDialogMapping;
-	private AdmModuleEventListener				eventListener;
-	private Action								newModuleAction,
+	private AdmModuleViewEventListener			eventListener;
+	private Action								newResourceAction,
+												newModuleAction,
 												deleteModuleAction,
 												editModuleAction,
 												deleteResourceAction,
@@ -152,7 +153,8 @@ public class AdmModuleView extends AbstractView{
 		auxAplicationProperty = new ObjectProperty<Integer>(null, Integer.class);
 		notificationMsgMapping = new HashMap<String, String>();
 		confirmMsgDialogMapping = new HashMap<Button, MessageDialog>();
-		eventListener = new AdmModuleEventListener();
+		eventListener = new AdmModuleViewEventListener();
+		newResourceAction = new Action(conventionCaption("newResourceAction"));
 		newModuleAction = new Action(conventionCaption("newModuleAction"));
 		deleteModuleAction = new Action(conventionCaption("deleteModuleAction"));
 		editModuleAction = new Action(conventionCaption("editModuleAction"));
@@ -224,35 +226,40 @@ public class AdmModuleView extends AbstractView{
 		notificationMsgMapping.put(deleteModuleBtn.getData().toString(), getText("common.message.success_complete_deletion.notification"));
 		notificationMsgMapping.put(deleteResourceBtn.getData().toString(), getText("common.message.success_complete_deletion.notification"));
 		
-		confirmMsgDialogMapping.put(deleteModuleBtn, new MessageDialog(deleteModuleBtn.getCaption(), getText("common.message.deletion_confirmation.question"), Type.QUESTION));
-		confirmMsgDialogMapping.put(deleteResourceBtn, new MessageDialog(deleteResourceBtn.getCaption(), getText("common.message.deletion_confirmation.question"), Type.QUESTION));
+		confirmMsgDialogMapping.put(deleteModuleBtn, new MessageDialog(getText("common.message.deletion_confirmation.title"), 
+				getText("common.message.deletion_confirmation.question"), Type.QUESTION));
+		
+		confirmMsgDialogMapping.put(deleteResourceBtn, new MessageDialog(getText("common.message.deletion_confirmation.title"), 
+				getText("common.message.deletion_confirmation.question"), Type.QUESTION));
 		
 		moduleHierarchyTree.addActionHandler(eventListener);
+		
 		resourceTable.addActionHandler(eventListener);
+		
 		for(Button button : confirmMsgDialogMapping.keySet())
 			button.addClickListener(eventListener);
 
 	}
 	
 	private Action[] getModuleTreeActions(){
-		return new Action[]{newModuleAction, editModuleAction, deleteModuleAction};
+		return new Action[]{newModuleAction, editModuleAction, deleteModuleAction, newResourceAction};
 	}
 	
 	private Action[] getResourceTableActions(){
 		return new Action[]{editResourceAction, deleteResourceAction};
 	}
 	
-	private class AdmModuleEventListener implements ClickListener, Action.Handler{
+	class AdmModuleViewEventListener implements ClickListener, Action.Handler{
 		@Override public void buttonClick(ClickEvent event) {
 			if(confirmMsgDialogMapping.containsKey(event.getButton()))
 				confirmMsgDialogMapping.get(event.getButton()).show();
 		}
 
 		@Override public Action[] getActions(Object target, Object sender) {
-			if(target == null) return null;
+			if(applicationProperty.getValue() == null) return null;
 			if(moduleHierarchyTree.equals(sender))
-				return getModuleTreeActions();
-			return getResourceTableActions();
+				return target != null ? getModuleTreeActions() : new Action[]{newModuleAction};
+			return target != null ? getResourceTableActions() : new Action[]{newResourceAction};
 		}
 
 		@Override public void handleAction(Action action, Object sender, Object target) {
@@ -264,11 +271,12 @@ public class AdmModuleView extends AbstractView{
 				editModuleBtn.click();
 			if(deleteModuleAction.equals(action))
 				confirmMsgDialogMapping.get(deleteModuleBtn).show();
+			if(newResourceAction.equals(action))
+				newResourceBtn.click();
 			if(editResourceAction.equals(action))
 				editResourceBtn.click();
 			if(deleteResourceAction.equals(action))
 				confirmMsgDialogMapping.get(deleteResourceBtn).show();
 		}
-		
 	}
 }
