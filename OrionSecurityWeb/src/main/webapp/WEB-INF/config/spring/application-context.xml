@@ -51,7 +51,7 @@
 
 	
 	<bean id="databaseMigrator" class="co.com.binariasystems.fmw.util.db.DatabaseMigrator" init-method="executeDatabaseMigration">
-		<property name="dataSource" ref="${entityManagerFactory.dataSourceName}"/>
+		<property name="dataSource" ref="${SystemEnvironment.mainDataSourceName}"/>
 		<property name="loaderClass" ref="application.default.resorceLoaderClass"/>
 		<property name="properties">
 			<util:properties location="classpath:configuration.properties"/>
@@ -60,7 +60,7 @@
 	
 <!-- 	<bean id="dataModelInstaller" class="co.com.binariasystems.fmw.util.db.DataModelInstaller" init-method="validateDataModelCreation"> -->
 <!-- 		<property name="createIfNotExist" value="true"/> -->
-<!-- 		<property name="dataSource" ref="${entityManagerFactory.dataSourceName}"/> -->
+<!-- 		<property name="dataSource" ref="${SystemEnvironment.mainDataSourceName}"/> -->
 <!-- 		<property name="loaderClass" ref="application.default.resorceLoaderClass"/> -->
 <!-- 		<property name="configProperties"> -->
 <!-- 			<util:properties location="classpath:configuration.properties"/> -->
@@ -75,7 +75,7 @@
 <!-- 		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" /> -->
 		<property name="persistenceUnitName" value="${entityManagerFactory.persistenceUnitName}" />
 		<property name="packagesToScan" value="${entityManagerFactory.packagesToScan}"/>
-		<property name="dataSource" ref="${entityManagerFactory.dataSourceName}" />
+		<property name="dataSource" ref="${SystemEnvironment.mainDataSourceName}" />
 		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
 		<property name="loadTimeWeaver">
 			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver"/>

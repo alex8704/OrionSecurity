@@ -34,7 +34,6 @@ import co.com.binariasystems.orion.model.dto.RoleDTO;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
@@ -155,12 +154,6 @@ public class AdmRoleResourceViewController extends AbstractViewController {
 		if(module.getParentModule() != null)
 			moduleTree.setParent(module, module.getParentModule());
 	}
-	
-	private void expandModuleTreeItemRecursively(ModuleDTO module){
-		ModuleDTO treeNode = module;
-		while((treeNode = treeNode.getParentModule()) != null)
-			moduleTree.setCollapsed(treeNode, false);
-	}
 
 	private void toggleActionButtonsState(){
 		saveBtn.setEnabled(getResource() != null);
@@ -188,15 +181,6 @@ public class AdmRoleResourceViewController extends AbstractViewController {
 	
 	private ResourceDTO getResource(){
 		return resourceTableProperty.getValue();
-	}
-	
-	private List<RoleDTO> getAuthorizedRoles(){
-		List<RoleDTO> authorized = new LinkedList<RoleDTO>();
-		for(RoleDTO role : ((BeanItemContainer<RoleDTO>)roleTable.getContainerDataSource()).getItemIds()){
-			if(role.isSelected())
-				authorized.add(role);
-		}
-		return authorized;
 	}
 	
 	private class AdmRoleResourceViewValueChangeListener implements ValueChangeListener{

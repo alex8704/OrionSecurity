@@ -9,6 +9,7 @@ import co.com.binariasystems.fmw.annotation.Dependency;
 import co.com.binariasystems.fmw.exception.FMWUncheckedException;
 import co.com.binariasystems.fmw.util.pagination.ListPage;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.Init;
+import co.com.binariasystems.fmw.vweb.mvp.annotation.UIEventHandler;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController.OnLoad;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewController.OnUnLoad;
@@ -24,6 +25,8 @@ import co.com.binariasystems.fmw.vweb.uicomponet.pager.PageChangeHandler;
 import co.com.binariasystems.fmw.vweb.util.VWebUtils;
 import co.com.binariasystems.orion.business.bean.UserBean;
 import co.com.binariasystems.orion.model.dto.UserDTO;
+import co.com.binariasystems.orion.web.uievent.AuthorizeUserRoleWindowEvent;
+import co.com.binariasystems.orion.web.view.admin.AuthorizeUserRolesWindow;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
@@ -42,7 +45,7 @@ import com.vaadin.ui.Notification.Type;
 public class AdmUserViewController extends AbstractViewController{
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdmUserViewController.class);
 	@ViewField private FormPanel 					form;	
-	@ViewField private	BeanItemContainer<UserDTO>	userGridItems;
+	@ViewField private BeanItemContainer<UserDTO>	userGridItems;
 	@ViewField private Grid							userGrid;
 	@ViewField private Pager<UserDTO, UserDTO>		pager;
 	@ViewField private ButtonBuilder				saveBtn,
@@ -52,6 +55,7 @@ public class AdmUserViewController extends AbstractViewController{
 	@ViewField private UserDTO currentUser;
 	@ViewField private Map<String, String>				notificationMsgMapping;
 	@ViewField private Map<Button, MessageDialog>		confirmMsgDialogMapping;
+	@ViewField private AuthorizeUserRolesWindow		rolesWindow;
 	
 	@Dependency
 	private UserBean userBean;
@@ -69,7 +73,7 @@ public class AdmUserViewController extends AbstractViewController{
 	
 	@OnLoad
 	public void onLoad(){
-		pager.setFilterDto(currentUser);
+		loadAllUsers();
 		form.initFocus();
 	}
 	
@@ -77,6 +81,12 @@ public class AdmUserViewController extends AbstractViewController{
 	public void onUnload(){
 		cleanForm();
 		toggleActionButtonsState();
+	}
+	
+	private void loadAllUsers(){
+		if(userGrid.getSelectedRow() != null)
+			userGrid.deselect(userGrid.getSelectedRow());
+		pager.setFilterDto(new UserDTO());
 	}
 	
 	private void cleanForm(){
@@ -104,14 +114,17 @@ public class AdmUserViewController extends AbstractViewController{
 	private void saveBtnClick() throws FormValidationException{
 		form.validate();
 		currentUser.setUserId(null);
-		setCurrentUser(userBean.save(currentUser));
+		UserDTO saved = userBean.save(currentUser);
+		loadAllUsers();
+		userGrid.select(saved);
 		showSuccessOperationNotification((String)saveBtn.getData());
 	}
 	
 	private void editBtnClick() throws FormValidationException{
 		form.validate();
-		currentUser.setUserId(null);
-		setCurrentUser(userBean.save(currentUser));
+		UserDTO saved = userBean.save(currentUser);
+		loadAllUsers();
+		userGrid.select(saved);
 		showSuccessOperationNotification((String)editBtn.getData());
 	}
 	
@@ -124,7 +137,13 @@ public class AdmUserViewController extends AbstractViewController{
 	}
 	
 	private void showSuccessOperationNotification(String action){
-		new Notification(FontAwesome.THUMBS_UP.getHtml(), notificationMsgMapping.get(action), Type.TRAY_NOTIFICATION).show(Page.getCurrent());;
+		new Notification(FontAwesome.THUMBS_UP.getHtml(), notificationMsgMapping.get(action), Type.TRAY_NOTIFICATION, true).show(Page.getCurrent());
+	}
+	
+	@UIEventHandler
+	public void onAuthorizeUserRolesWindowEvent(AuthorizeUserRoleWindowEvent event){
+		if("save".equals(event.getId()))
+			showSuccessOperationNotification((String)rolesWindow.getData());
 	}
 	
 	

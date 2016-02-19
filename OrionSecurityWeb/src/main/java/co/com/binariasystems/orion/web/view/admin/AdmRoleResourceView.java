@@ -14,6 +14,7 @@ import co.com.binariasystems.orion.model.dto.ModuleDTO;
 import co.com.binariasystems.orion.model.dto.ResourceDTO;
 import co.com.binariasystems.orion.model.dto.RoleDTO;
 import co.com.binariasystems.orion.web.controller.admin.AdmRoleResourceViewController;
+import co.com.binariasystems.orion.web.utils.RoleSelectableColumnGenerator;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -22,11 +23,9 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Table.ColumnHeaderMode;
 import com.vaadin.ui.TreeTable;
 
@@ -121,20 +120,5 @@ public class AdmRoleResourceView extends AbstractView {
 				resourceTableProperty.setValue((ResourceDTO) event.getProperty().getValue());
 		}
 		
-	}
-	
-	private class RoleSelectableColumnGenerator implements ColumnGenerator {
-		@Override public Object generateCell(Table source, Object itemId, Object columnId) {
-			if(columnId == null) return null;
-			final RoleDTO role = (RoleDTO)itemId;
-			final CheckBox checkBox = new CheckBox(role.getName(), role.isSelected());
-			checkBox.setDescription(role.getDescription());
-			checkBox.addValueChangeListener(new ValueChangeListener() {
-				@Override public void valueChange(ValueChangeEvent event) {
-					role.setSelected(checkBox.getValue().booleanValue());
-				}
-			});
-			return checkBox;
-		}
 	}
 }

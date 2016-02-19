@@ -18,6 +18,7 @@ import co.com.binariasystems.orion.business.bean.UserBean;
 import co.com.binariasystems.orion.business.dao.UserDAO;
 import co.com.binariasystems.orion.business.entity.SegtRole;
 import co.com.binariasystems.orion.business.entity.SegtUser;
+import co.com.binariasystems.orion.business.entity.SegtUserCredentials;
 import co.com.binariasystems.orion.business.specification.UserSpecifications;
 import co.com.binariasystems.orion.business.utils.OrionBusinessUtils;
 import co.com.binariasystems.orion.model.dto.RoleDTO;
@@ -46,26 +47,28 @@ public class UserBeanImpl implements UserBean{
 	@Override
 	public UserDTO save(UserDTO user) {
 		SegtUser userToSave = user.getUserId() == null ? ObjectUtils.transferProperties(user, SegtUser.class) : dao.findOne(user.getUserId());
+		UserCredentialsDTO credentials = null;
 		if(userToSave.getUserId() != null){
 			UserCredentialsDTO storedCredentials = ObjectUtils.transferProperties(userToSave.getCredentials(), UserCredentialsDTO.class);
+			credentials = storedCredentials;
 			/**
 			 * Validacion de cambio de credenciales cuando se trata de un usuario a actualizar, se valida si el valor ingresado
 			 * desde pantalla no es nulo y si no hace match con el password actual, para entonces proceder a actualizarlo
 			 */
 			if(StringUtils.isNotEmpty(user.getCredentials().getPassword()) && !credentialsMatches(user.getCredentials().getPassword(), storedCredentials)){
 				EncryptionResult ecnryptResult = OrionBusinessUtils.encryptPassword(user.getCredentials().getPassword());
-				user.setCredentials(new UserCredentialsDTO(ecnryptResult.getEncryptedValue(), ecnryptResult.getHexSalt()));
-			}else
-				user.setCredentials(storedCredentials);
-			ObjectUtils.transferProperties(user, userToSave);
+				credentials = new UserCredentialsDTO(ecnryptResult.getEncryptedValue(), ecnryptResult.getHexSalt());
+			}
 		}else{
 			/**
 			 * Para Usuarios nuevos se usa el numero de identificacion como password por defecto,  si el usuario no asigna uno
 			 */
 			String plainPassword = StringUtils.isEmpty(user.getCredentials().getPassword()) ? user.getIdentificationNumber() : user.getCredentials().getPassword();
 			EncryptionResult ecnryptResult = OrionBusinessUtils.encryptPassword(plainPassword);
-			user.setCredentials(new UserCredentialsDTO(ecnryptResult.getEncryptedValue(), ecnryptResult.getHexSalt()));
+			credentials = new UserCredentialsDTO(ecnryptResult.getEncryptedValue(), ecnryptResult.getHexSalt());
 		}
+		ObjectUtils.transferProperties(user, userToSave);
+		userToSave.setCredentials(new SegtUserCredentials(credentials.getPassword(), credentials.getPasswordSalt()));
 		return ObjectUtils.transferProperties(dao.save(userToSave), UserDTO.class);
 	}
 

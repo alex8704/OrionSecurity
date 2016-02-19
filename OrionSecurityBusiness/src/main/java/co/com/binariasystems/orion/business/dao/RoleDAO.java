@@ -12,4 +12,5 @@ public interface RoleDAO extends JPABasedDAO<SegtRole, Integer> {
 	public List<SegtRole> findByAssignedUsersAndApplication(SegtUser user, SegtApplication application);
 	public List<SegtRole> findByAuthorizedResources(SegtResource resource);
 	public List<SegtRole> findByApplication(SegtApplication application);
+	public List<SegtRole> findByAssignedUsers(SegtUser user);
 }

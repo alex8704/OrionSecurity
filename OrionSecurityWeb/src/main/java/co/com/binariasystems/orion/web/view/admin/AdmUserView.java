@@ -1,6 +1,5 @@
 package co.com.binariasystems.orion.web.view.admin;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,19 +26,25 @@ import co.com.binariasystems.orion.web.controller.admin.AdmUserViewController;
 import co.com.binariasystems.orion.web.utils.SN2BooleanConverter;
 import co.com.binariasystems.orion.web.utils.SN2BooleanPropertyGenerator;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
+import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.renderers.ButtonRenderer;
+import com.vaadin.ui.renderers.ClickableRenderer.RendererClickEvent;
+import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
 import com.vaadin.ui.renderers.ImageRenderer;
 
 @View(url="/user", viewStringsByConventions=true, controller=AdmUserViewController.class)
@@ -84,6 +89,9 @@ public class AdmUserView extends AbstractView {
 										editBtn,
 										searchBtn;
 	
+	@NoConventionString
+	private AuthorizeUserRolesWindow	rolesWindow;
+	
 	private Map<String, String>				notificationMsgMapping;
 	private Map<Button, MessageDialog>		confirmMsgDialogMapping;
 	private BeanFieldGroup<UserDTO>		fieldGroup;
@@ -110,6 +118,7 @@ public class AdmUserView extends AbstractView {
 		searchBtn = new ButtonBuilder();
 		userGrid = new Grid();
 		pager = new Pager<UserDTO, UserDTO>();
+		rolesWindow = new AuthorizeUserRolesWindow();
 		addDataBinding();
 		
 		form.add(loginAliasTxt, Dimension.percent(100))
@@ -122,8 +131,8 @@ public class AdmUserView extends AbstractView {
 		.add(lastAccessDateDf, Dimension.percent(100))
 		.add(blockingDateDf, Dimension.percent(100))
 		.add(failedRetriesTxt, Dimension.percent(100))
-		.add(isActiveChk, Dimension.percent(100))
-		.add(isBlockedByMaxRetriesChk, Dimension.percent(100))
+		.add(isActiveChk, Alignment.MIDDLE_LEFT, Dimension.percent(100))
+		.add(isBlockedByMaxRetriesChk, Alignment.MIDDLE_LEFT, Dimension.percent(100))
 		.addEmptyRow()
 		.addCenteredOnNewRow(saveBtn, editBtn, searchBtn)
 		.addEmptyRow()
@@ -146,6 +155,17 @@ public class AdmUserView extends AbstractView {
 		
 		userGridDS.addGeneratedProperty("isBlockedByMaxRetries", new SN2BooleanPropertyGenerator());
 		userGridDS.addGeneratedProperty("isActive", new SN2BooleanPropertyGenerator());
+		userGridDS.addGeneratedProperty("userId", new PropertyValueGenerator<String>() {
+			@Override public String getValue(Item item, Object itemId, Object propertyId) {
+				if(propertyId == null) return null;
+				return "Roles";
+			}
+			@Override public Class<String> getType() {
+				return String.class;
+			}
+		});
+		isActiveChk.setConverter(new SN2BooleanConverter());
+		isBlockedByMaxRetriesChk.setConverter(new SN2BooleanConverter());
 		
 		userGrid.setContainerDataSource(userGridDS);
 		
@@ -163,9 +183,6 @@ public class AdmUserView extends AbstractView {
 		failedRetriesTxt.withFullWidth();
 		isActiveChk.setWidth(100, Unit.PERCENTAGE);
 		isBlockedByMaxRetriesChk.setWidth(100, Unit.PERCENTAGE);
-		
-		isActiveChk.setConverter(new SN2BooleanConverter());
-		isBlockedByMaxRetriesChk.setConverter(new SN2BooleanConverter());
 		
 		lastAccessIPTxt.readOnly();
 		isoLanguajeCodeTxt.readOnly();
@@ -188,34 +205,27 @@ public class AdmUserView extends AbstractView {
 		.disable();
 		searchBtn.withIcon(FontAwesome.SEARCH);
 		
-		userGrid.setColumns("userId",
+		rolesWindow.setData("rolesAssignement");
+		
+		userGrid.setColumns(
 				"loginAlias",
 				"identificationNumber",
 				"fullName",
-				"lastAccessDate",
-				"lastAccessIP",
-				"isoLanguageCode",
 				"emailAddress",
-				"failedRetries",
 				"isBlockedByMaxRetries",
-				"blockingDate",
-				"isActive");
-		userGrid.getColumn("lastAccessDate").setRenderer(GridUtils.obtainRendererForType(Timestamp.class));
-		userGrid.getColumn("blockingDate").setRenderer(GridUtils.obtainRendererForType(Timestamp.class));
+				"isActive",
+				"userId");
 		userGrid.getColumn("isActive").setRenderer(new ImageRenderer());
 		userGrid.getColumn("isBlockedByMaxRetries").setRenderer(new ImageRenderer());
+		userGrid.getColumn("userId").setRenderer(new ButtonRenderer(eventListener));
 		userGrid.setCellStyleGenerator(new GridUtils.SimpleCellStyleGenerator(
-				new GridUtils.SimpleStyleInfo("lastAccessDate", UIConstants.CENTER_ALIGN_STYLE),
-				new GridUtils.SimpleStyleInfo("lastAccessIP", UIConstants.CENTER_ALIGN_STYLE),
-				new GridUtils.SimpleStyleInfo("isoLanguageCode", UIConstants.CENTER_ALIGN_STYLE),
-				new GridUtils.SimpleStyleInfo("failedRetries", UIConstants.CENTER_ALIGN_STYLE),
-				new GridUtils.SimpleStyleInfo("blockingDate", UIConstants.CENTER_ALIGN_STYLE),
 				new GridUtils.SimpleStyleInfo("isBlockedByMaxRetries", UIConstants.CENTER_ALIGN_STYLE),
 				new GridUtils.SimpleStyleInfo("isActive", UIConstants.CENTER_ALIGN_STYLE)
 				));
 		
 		notificationMsgMapping.put(saveBtn.getData().toString(), getText("common.message.success_complete_creation.notification"));
 		notificationMsgMapping.put(editBtn.getData().toString(), getText("common.message.success_complete_edition.notification"));
+		notificationMsgMapping.put(rolesWindow.getData().toString(), getText("common.message.success_complete_information_creation.notification"));
 
 		confirmMsgDialogMapping.put(saveBtn, new MessageDialog(getText("common.message.creation_confirmation.title"), 
 				getText("common.message.creation_confirmation.question"), Type.QUESTION));
@@ -228,10 +238,14 @@ public class AdmUserView extends AbstractView {
 		
 	}
 	
-	private class AdmUserViewEventListener implements ClickListener{
+	private class AdmUserViewEventListener implements ClickListener, RendererClickListener{
 		@Override public void buttonClick(ClickEvent event) {
 			if(confirmMsgDialogMapping.containsKey(event.getButton()))
 				confirmMsgDialogMapping.get(event.getButton()).show();
+		}
+		
+		@Override public void click(RendererClickEvent event) {
+			rolesWindow.show((UserDTO) event.getItemId());
 		}
 		
 	}

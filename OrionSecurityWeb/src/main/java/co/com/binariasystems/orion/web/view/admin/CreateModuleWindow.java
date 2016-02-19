@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
+import co.com.binariasystems.fmw.exception.FMWException;
 import co.com.binariasystems.fmw.ioc.IOCHelper;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.NoConventionString;
 import co.com.binariasystems.fmw.vweb.mvp.annotation.validation.NullValidator;
@@ -77,70 +78,71 @@ public class CreateModuleWindow extends Window {
     }
     
 	private void init(){
+		form = new FormPanel(2);
+		applicationTxt = new SearcherField<ApplicationDTO>(ApplicationDTO.class);
+		parentModuleTxt = new SearcherField<ModuleDTO>(ModuleDTO.class);
+		nameTxt = new TextFieldBuilder();
+		descriptionTxt = new TextFieldBuilder();
+		indexTxt = new TextFieldBuilder();
+		saveBtn = new ButtonBuilder();
+		editBtn = new ButtonBuilder();
+		cancelBtn = new ButtonBuilder();
+		fieldGroup = new BeanFieldGroup<ModuleDTO>(ModuleDTO.class);
+		confirmMsgDialogMapping = new HashMap<Button, MessageDialog>();
+		
+		form.add(applicationTxt)
+		.add(parentModuleTxt)
+		.add(nameTxt, Dimension.percent(100))
+		.add(descriptionTxt, Dimension.percent(100))
+		.add(indexTxt, Dimension.percent(100))
+		.addCenteredOnNewRow(saveBtn, editBtn, cancelBtn);
+		
+		setContent(form);
+		
+		fieldGroup.setBuffered(false);
+		fieldGroup.setItemDataSource(moduleDTO);
+		fieldGroup.bindMemberFields(this);
+		
+		saveBtn.withIcon(FontAwesome.SAVE)
+		.withData("create")
+		.disable();
+		editBtn.withIcon(FontAwesome.EDIT)
+		.withData("edit")
+		.disable();
+		cancelBtn.withIcon(FontAwesome.CLOSE)
+		.withData("cancel");
+		
+		applicationTxt.setReadOnly(true);
+		parentModuleTxt.setReadOnly(true);
+		nameTxt.withoutUpperTransform();
+		descriptionTxt.withoutUpperTransform();
+		indexTxt.withoutUpperTransform();
+		
+		confirmMsgDialogMapping.put(saveBtn, new MessageDialog(getText("common.message.creation_confirmation.title"), 
+				getText("common.message.creation_confirmation.question"), Type.QUESTION));
+		
+		confirmMsgDialogMapping.put(editBtn, new MessageDialog(getText("common.message.edition_confirmation.title"), 
+				getText("common.message.edition_confirmation.question"), Type.QUESTION));
+		
+		confirmMsgDialogMapping.put(cancelBtn, new MessageDialog(getText("common.message.cancelation_confirmation.title"), 
+				getText("common.message.cancelation_confirmation.question"), Type.QUESTION));
+		
+		setWidth(750, Unit.PIXELS);
+		setResizable(false);
+		setModal(true);
+		MVPUtils.applyConventionStringsForView(this, OrionWebConstants.ADMIN_VIEW_MESSAGES);
 		try {
-			form = new FormPanel(2);
-			applicationTxt = new SearcherField<ApplicationDTO>(ApplicationDTO.class);
-			parentModuleTxt = new SearcherField<ModuleDTO>(ModuleDTO.class);
-			nameTxt = new TextFieldBuilder();
-			descriptionTxt = new TextFieldBuilder();
-			indexTxt = new TextFieldBuilder();
-			saveBtn = new ButtonBuilder();
-			editBtn = new ButtonBuilder();
-			cancelBtn = new ButtonBuilder();
-			fieldGroup = new BeanFieldGroup<ModuleDTO>(ModuleDTO.class);
-			confirmMsgDialogMapping = new HashMap<Button, MessageDialog>();
 			
-			form.add(applicationTxt)
-			.add(parentModuleTxt)
-			.add(nameTxt, Dimension.percent(100))
-			.add(descriptionTxt, Dimension.percent(100))
-			.add(indexTxt, Dimension.percent(100))
-			.addCenteredOnNewRow(saveBtn, editBtn, cancelBtn);
-			
-			setContent(form);
-			
-			fieldGroup.setBuffered(false);
-			fieldGroup.setItemDataSource(moduleDTO);
-			fieldGroup.bindMemberFields(this);
-			
-			saveBtn.withIcon(FontAwesome.SAVE)
-			.withData("create")
-			.disable();
-			editBtn.withIcon(FontAwesome.EDIT)
-			.withData("edit")
-			.disable();
-			cancelBtn.withIcon(FontAwesome.CLOSE)
-			.withData("cancel");
-			
-			applicationTxt.setReadOnly(true);
-			parentModuleTxt.setReadOnly(true);
-			nameTxt.withoutUpperTransform();
-			descriptionTxt.withoutUpperTransform();
-			indexTxt.withoutUpperTransform();
-			
-			confirmMsgDialogMapping.put(saveBtn, new MessageDialog(getText("common.message.creation_confirmation.title"), 
-					getText("common.message.creation_confirmation.question"), Type.QUESTION));
-			
-			confirmMsgDialogMapping.put(editBtn, new MessageDialog(getText("common.message.edition_confirmation.title"), 
-					getText("common.message.edition_confirmation.question"), Type.QUESTION));
-			
-			confirmMsgDialogMapping.put(cancelBtn, new MessageDialog(getText("common.message.cancelation_confirmation.title"), 
-					getText("common.message.cancelation_confirmation.question"), Type.QUESTION));
-			
-			setWidth(750, Unit.PIXELS);
-			setResizable(false);
-			setModal(true);
-			MVPUtils.applyConventionStringsForView(this, OrionWebConstants.ADMIN_VIEW_MESSAGES);
 			MVPUtils.applyValidatorsForView(this);
+			MVPUtils.injectIOCProviderDependencies(this, getClass());
 			
-			bindEvents();
-		} catch (ParseException e) {
+		} catch (ParseException | FMWException e) {
 			MessageDialog.showExceptions(e);
 		}
+		bindEvents();
 	}
 	
 	private void bindEvents(){
-		moduleBean = IOCHelper.getBean(ModuleBean.class);
 		clickListener = new CreateModuleWindowClickListener();
 		for(Button button : confirmMsgDialogMapping.keySet())
 			button.addClickListener(clickListener);
