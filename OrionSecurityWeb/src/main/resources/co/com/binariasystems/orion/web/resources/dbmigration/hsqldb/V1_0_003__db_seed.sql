@@ -2,11 +2,11 @@
  * Insercion de datos semilla en la tabla SEGT_APLICACIONES
  **************************************************************************************************************************************/
 INSERT INTO SEGT_APLICACIONES(COD_APLICACION,NOMBRE,DESCRIPCION)
-VALUES('ORION','OrionSecurity','Plataforma  de Gesti\u00f3n Centralizada de Modelo de Autenticaion y Autorizacion de Usuarios');
+VALUES('ORION','OrionSecurity','Plataforma  de Gestion Centralizada de Modelo de Autenticaion y Autorizacion de Usuarios');
 INSERT INTO SEGT_APLICACIONES(COD_APLICACION,NOMBRE,DESCRIPCION)
-VALUES('GESTPYMESOC','GestPymeSOC','Plataforma  de Gesti\u00f3n para Pequenas y Medianas empresas dedicadas a Servicios de Obra Civil y Similares');
+VALUES('GESTPYMESOC','GestPymeSOC','Plataforma  de Gestion para Pequenas y Medianas empresas dedicadas a Servicios de Obra Civil y Similares');
 INSERT INTO SEGT_APLICACIONES(COD_APLICACION,NOMBRE,DESCRIPCION)
-VALUES('MASTERCENTRAL','MasterCentral','Plataforma  de Gesti\u00f3n para el modela de datos de Maestras y tablas comunes');
+VALUES('MASTERCENTRAL','MasterCentral','Plataforma  de Gestion para el modela de datos de Maestras y tablas comunes');
 
 /**************************************************************************************************************************************
  * Insercion de datos semilla en la tabla SEGT_ROLES

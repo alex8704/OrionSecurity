@@ -35,6 +35,7 @@ import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -135,7 +136,6 @@ public class AdmUserView extends AbstractView {
 		.add(isBlockedByMaxRetriesChk, Alignment.MIDDLE_LEFT, Dimension.percent(100))
 		.addEmptyRow()
 		.addCenteredOnNewRow(saveBtn, editBtn, searchBtn)
-		.addEmptyRow()
 		.add(userGrid, 2, Dimension.percent(100))
 		.add(pager, 2, Dimension.percent(100));
 		
@@ -222,6 +222,9 @@ public class AdmUserView extends AbstractView {
 				new GridUtils.SimpleStyleInfo("isBlockedByMaxRetries", UIConstants.CENTER_ALIGN_STYLE),
 				new GridUtils.SimpleStyleInfo("isActive", UIConstants.CENTER_ALIGN_STYLE)
 				));
+		
+		userGrid.setHeightMode(HeightMode.ROW);
+		userGrid.setHeightByRows(10);
 		
 		notificationMsgMapping.put(saveBtn.getData().toString(), getText("common.message.success_complete_creation.notification"));
 		notificationMsgMapping.put(editBtn.getData().toString(), getText("common.message.success_complete_edition.notification"));
