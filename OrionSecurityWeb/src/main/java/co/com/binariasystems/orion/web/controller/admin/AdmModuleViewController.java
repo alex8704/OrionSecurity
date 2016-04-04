@@ -16,6 +16,7 @@ import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewField;
 import co.com.binariasystems.fmw.vweb.mvp.controller.AbstractViewController;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
+import co.com.binariasystems.fmw.vweb.uicomponet.SortableBeanContainer;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.orion.business.bean.ApplicationBean;
 import co.com.binariasystems.orion.business.bean.ModuleBean;
@@ -54,7 +55,7 @@ public class AdmModuleViewController extends AbstractViewController {
 	@ViewField private BeanItemContainer<ApplicationDTO> 	applicationDS;
 	@ViewField private BeanItemContainer<ModuleDTO> 		moduleHierarchyItems;
 	@ViewField private ContainerHierarchicalWrapper 		moduleHierarchyDS;
-	@ViewField private BeanItemContainer<ResourceDTO> 		resourceTableDS;
+	@ViewField private SortableBeanContainer<ResourceDTO> 		resourceTableDS;
 	@ViewField private ButtonBuilder 						newModuleBtn, 
 															newResourceBtn, 
 															editModuleBtn, 

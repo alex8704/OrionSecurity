@@ -4,16 +4,15 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.com.binariasystems.fmw.business.domain.Order;
+import co.com.binariasystems.fmw.business.domain.Order.Direction;
+import co.com.binariasystems.fmw.business.domain.Page;
+import co.com.binariasystems.fmw.business.domain.PageRequest;
 import co.com.binariasystems.fmw.security.crypto.impl.EncryptionResult;
 import co.com.binariasystems.fmw.util.ObjectUtils;
-import co.com.binariasystems.fmw.util.pagination.ListPage;
 import co.com.binariasystems.orion.business.bean.UserBean;
 import co.com.binariasystems.orion.business.dao.UserDAO;
 import co.com.binariasystems.orion.business.entity.SegtRole;
@@ -32,16 +31,18 @@ public class UserBeanImpl implements UserBean{
 	private UserDAO dao;
 	
 	@Override
-	public ListPage<UserDTO> findAll(int page, int pageSize) {
-		Page<SegtUser> resultPage = dao.findAll(new PageRequest(page - 1, pageSize, new Sort(new Sort.Order(Direction.DESC, "userId"))));
-		return new ListPage<UserDTO>(ObjectUtils.transferProperties(resultPage.getContent(), UserDTO.class), resultPage.getTotalElements());
+	public Page<UserDTO> findAll(PageRequest pageRequest) {
+		return OrionBusinessUtils.toPage(
+				dao.findAll(OrionBusinessUtils.buildPageRequest(pageRequest, new Order(Direction.DESC, "userId"))), 
+				UserDTO.class);
 	}
 
 	@Override
-	public ListPage<UserDTO> findAll(UserDTO user, int page, int pageSize) {
-		Page<SegtUser> resultPage = dao.findAll(UserSpecifications.filledFieldsEqualsTo(user),
-				new PageRequest(page - 1, pageSize, new Sort(new Sort.Order(Direction.DESC, "userId"))));
-		return new ListPage<UserDTO>(ObjectUtils.transferProperties(resultPage.getContent(), UserDTO.class), resultPage.getTotalElements());
+	public Page<UserDTO> findAll(UserDTO user, PageRequest pageRequest) {
+		return OrionBusinessUtils.toPage(
+				dao.findAll(UserSpecifications.filledFieldsEqualsTo(user),
+						OrionBusinessUtils.buildPageRequest(pageRequest, new Order(Direction.DESC, "userId"))), 
+				UserDTO.class);
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog.Type;
 import co.com.binariasystems.fmw.vweb.uicomponet.Pager;
+import co.com.binariasystems.fmw.vweb.uicomponet.SortableBeanContainer;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.DateFieldBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.PasswordFieldBuilder;
@@ -30,7 +31,6 @@ import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.data.util.PropertyValueGenerator;
 import com.vaadin.server.FontAwesome;
@@ -81,7 +81,7 @@ public class AdmUserView extends AbstractView {
 	@PropertyId("isBlockedByMaxRetries")
 	private CheckBox					isBlockedByMaxRetriesChk;
 	
-	private	BeanItemContainer<UserDTO>	userGridItems;
+	private	SortableBeanContainer<UserDTO>	userGridItems;
 	private GeneratedPropertyContainer 	userGridDS;
 	private Grid						userGrid;
 	private Pager<UserDTO, UserDTO>		pager;
@@ -146,7 +146,7 @@ public class AdmUserView extends AbstractView {
 	private void addDataBinding(){
 		currentUser = new UserDTO();
 		BeanItem<UserDTO> beanItem = new BeanItem<UserDTO>(currentUser, UserDTO.class);
-		userGridItems = new BeanItemContainer<UserDTO>(UserDTO.class);
+		userGridItems = new SortableBeanContainer<UserDTO>(UserDTO.class);
 		userGridDS = new GeneratedPropertyContainer(userGridItems);
 		fieldGroup = new BeanFieldGroup<UserDTO>(UserDTO.class);
 		notificationMsgMapping = new HashMap<String, String>();

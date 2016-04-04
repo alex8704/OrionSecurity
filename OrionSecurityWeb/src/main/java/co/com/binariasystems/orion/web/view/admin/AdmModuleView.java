@@ -14,6 +14,7 @@ import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog.Type;
 import co.com.binariasystems.fmw.vweb.uicomponet.SearcherField;
+import co.com.binariasystems.fmw.vweb.uicomponet.SortableBeanContainer;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ComboBoxBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.LabelBuilder;
@@ -74,7 +75,7 @@ public class AdmModuleView extends AbstractView{
 	private BeanItemContainer<ApplicationDTO> 	applicationDS;
 	private BeanItemContainer<ModuleDTO> 		moduleHierarchyItems;
 	private ContainerHierarchicalWrapper 		moduleHierarchyDS;
-	private BeanItemContainer<ResourceDTO> 		resourceTableDS;
+	private SortableBeanContainer<ResourceDTO> 		resourceTableDS;
 	private ObjectProperty<ApplicationDTO> 		applicationProperty;
 	private ObjectProperty<ModuleDTO>			parentModuleProperty;
 	private ObjectProperty<Integer> 			auxAplicationProperty;
@@ -147,7 +148,7 @@ public class AdmModuleView extends AbstractView{
 		applicationDS = new BeanItemContainer<ApplicationDTO>(ApplicationDTO.class);
 		moduleHierarchyItems = new BeanItemContainer<ModuleDTO>(ModuleDTO.class);
 		moduleHierarchyDS = new ContainerHierarchicalWrapper(moduleHierarchyItems);
-		resourceTableDS = new BeanItemContainer<ResourceDTO>(ResourceDTO.class);
+		resourceTableDS = new SortableBeanContainer<ResourceDTO>(ResourceDTO.class);
 		applicationProperty = new ObjectProperty<ApplicationDTO>(null, ApplicationDTO.class);
 		parentModuleProperty = new ObjectProperty<ModuleDTO>(null, ModuleDTO.class);
 		auxAplicationProperty = new ObjectProperty<Integer>(null, Integer.class);

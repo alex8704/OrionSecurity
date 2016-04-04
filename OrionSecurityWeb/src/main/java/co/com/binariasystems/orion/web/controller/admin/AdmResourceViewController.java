@@ -18,6 +18,7 @@ import co.com.binariasystems.fmw.vweb.mvp.event.PopupViewCloseEvent;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormValidationException;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
+import co.com.binariasystems.fmw.vweb.uicomponet.SortableBeanContainer;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.orion.business.bean.ApplicationBean;
 import co.com.binariasystems.orion.business.bean.ModuleBean;
@@ -54,10 +55,10 @@ public class AdmResourceViewController extends AbstractViewController{
 															reorganizeBtn, 
 															deleteBtn, 
 															cancelBtn;
-	@ViewField private BeanItemContainer<ApplicationDTO> 	applicationTableDS;
+	@ViewField private SortableBeanContainer<ApplicationDTO> 	applicationTableDS;
 	@ViewField private BeanItemContainer<ModuleDTO> 		moduleTreeItems;
 	@ViewField private ContainerHierarchicalWrapper 		moduleTreeDS;
-	@ViewField private BeanItemContainer<ResourceDTO> 		resourceTableDS;
+	@ViewField private SortableBeanContainer<ResourceDTO> 		resourceTableDS;
 	@ViewField private ObjectProperty<ApplicationDTO>		applicationTableProperty;
 	@ViewField private ObjectProperty<ModuleDTO>			moduleTreeeProperty;
 	@ViewField private ObjectProperty<ResourceDTO>			resourceTableProperty;

@@ -7,6 +7,7 @@ import co.com.binariasystems.fmw.vweb.mvp.annotation.ViewBuild;
 import co.com.binariasystems.fmw.vweb.mvp.views.AbstractView;
 import co.com.binariasystems.fmw.vweb.uicomponet.Dimension;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
+import co.com.binariasystems.fmw.vweb.uicomponet.SortableBeanContainer;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ComboBoxBuilder;
 import co.com.binariasystems.orion.model.dto.ApplicationDTO;
@@ -84,11 +85,11 @@ public class AdmRoleResourceView extends AbstractView {
 		
 		roleTable.setColumnHeaderMode(ColumnHeaderMode.EXPLICIT);
 		resourceTable.setColumnHeaderMode(ColumnHeaderMode.EXPLICIT);
-		resourceTable.setContainerDataSource(new BeanItemContainer<ResourceDTO>(ResourceDTO.class));
+		resourceTable.setContainerDataSource(new SortableBeanContainer<ResourceDTO>(ResourceDTO.class));
 		resourceTable.setVisibleColumns("name", "resourcePath");
 		resourceTable.addValueChangeListener(valueChangeListener);
 		
-		roleTable.setContainerDataSource(new BeanItemContainer<RoleDTO>(RoleDTO.class));
+		roleTable.setContainerDataSource(new SortableBeanContainer<RoleDTO>(RoleDTO.class));
 		roleTable.addGeneratedColumn("name", new RoleSelectableColumnGenerator());
 		roleTable.setVisibleColumns("name");
 	}

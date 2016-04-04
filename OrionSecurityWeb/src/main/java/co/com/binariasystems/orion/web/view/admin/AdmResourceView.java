@@ -13,6 +13,7 @@ import co.com.binariasystems.fmw.vweb.uicomponet.Dimension;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog.Type;
+import co.com.binariasystems.fmw.vweb.uicomponet.SortableBeanContainer;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.LabelBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.TextFieldBuilder;
@@ -73,10 +74,10 @@ public class AdmResourceView extends AbstractView {
 	/*
 	 * Data Binding y Otros
 	 */
-	private BeanItemContainer<ApplicationDTO> 	applicationTableDS;
+	private SortableBeanContainer<ApplicationDTO> 	applicationTableDS;
 	private BeanItemContainer<ModuleDTO> 		moduleTreeItems;
 	private ContainerHierarchicalWrapper 		moduleTreeDS;
-	private BeanItemContainer<ResourceDTO> 		resourceTableDS;
+	private SortableBeanContainer<ResourceDTO> 		resourceTableDS;
 	private BeanFieldGroup<ResourceDTO> 		fieldGroup;
 	private ObjectProperty<ApplicationDTO>		applicationTableProperty;
 	private ObjectProperty<ModuleDTO>			moduleTreeeProperty;
@@ -119,10 +120,10 @@ public class AdmResourceView extends AbstractView {
 	}
 	
 	private void addDataBinding(){
-		applicationTableDS = new BeanItemContainer<ApplicationDTO>(ApplicationDTO.class);
+		applicationTableDS = new SortableBeanContainer<ApplicationDTO>(ApplicationDTO.class);
 		moduleTreeItems = new BeanItemContainer<ModuleDTO>(ModuleDTO.class);
 		moduleTreeDS = new ContainerHierarchicalWrapper(moduleTreeItems);
-		resourceTableDS = new BeanItemContainer<ResourceDTO>(ResourceDTO.class);
+		resourceTableDS = new SortableBeanContainer<ResourceDTO>(ResourceDTO.class);
 		currentResource = new ResourceDTO();
 		fieldGroup = new BeanFieldGroup<ResourceDTO>(ResourceDTO.class);
 		applicationTableProperty = new ObjectProperty<ApplicationDTO>(null, ApplicationDTO.class);

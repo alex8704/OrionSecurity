@@ -19,17 +19,18 @@ import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormValidationException;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
 import co.com.binariasystems.fmw.vweb.uicomponet.Pager;
+import co.com.binariasystems.fmw.vweb.uicomponet.SortableBeanContainer;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.pager.PageChangeEvent;
 import co.com.binariasystems.fmw.vweb.uicomponet.pager.PageChangeHandler;
 import co.com.binariasystems.fmw.vweb.util.VWebUtils;
 import co.com.binariasystems.orion.business.bean.UserBean;
+import co.com.binariasystems.orion.business.utils.OrionBusinessUtils;
 import co.com.binariasystems.orion.model.dto.UserDTO;
 import co.com.binariasystems.orion.web.uievent.AuthorizeUserRoleWindowEvent;
 import co.com.binariasystems.orion.web.view.admin.AuthorizeUserRolesWindow;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.SelectionEvent;
 import com.vaadin.event.SelectionEvent.SelectionListener;
 import com.vaadin.server.FontAwesome;
@@ -45,7 +46,7 @@ import com.vaadin.ui.Notification.Type;
 public class AdmUserViewController extends AbstractViewController{
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdmUserViewController.class);
 	@ViewField private FormPanel 					form;	
-	@ViewField private BeanItemContainer<UserDTO>	userGridItems;
+	@ViewField private SortableBeanContainer<UserDTO>	userGridItems;
 	@ViewField private Grid							userGrid;
 	@ViewField private Pager<UserDTO, UserDTO>		pager;
 	@ViewField private ButtonBuilder				saveBtn,
@@ -108,7 +109,7 @@ public class AdmUserViewController extends AbstractViewController{
 	}
 	
 	private ListPage<UserDTO> userGridLoadPage(PageChangeEvent<UserDTO> event){
-		return userBean.findAll(event.getFilterDTO(), event.getPage(), event.getRowsByPage());
+		return OrionBusinessUtils.pageToListPage(userBean.findAll(event.getFilterDTO(), event.getPageRequest()));
 	}
 	
 	private void saveBtnClick() throws FormValidationException{

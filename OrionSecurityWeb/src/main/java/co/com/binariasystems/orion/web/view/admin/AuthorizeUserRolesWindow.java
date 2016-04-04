@@ -18,6 +18,7 @@ import co.com.binariasystems.fmw.vweb.uicomponet.Dimension;
 import co.com.binariasystems.fmw.vweb.uicomponet.FormPanel;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog;
 import co.com.binariasystems.fmw.vweb.uicomponet.MessageDialog.Type;
+import co.com.binariasystems.fmw.vweb.uicomponet.SortableBeanContainer;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.ButtonBuilder;
 import co.com.binariasystems.fmw.vweb.uicomponet.builders.TextFieldBuilder;
 import co.com.binariasystems.fmw.vweb.util.LocaleMessagesUtil;
@@ -30,13 +31,11 @@ import co.com.binariasystems.orion.model.dto.ApplicationDTO;
 import co.com.binariasystems.orion.model.dto.RoleDTO;
 import co.com.binariasystems.orion.model.dto.UserDTO;
 import co.com.binariasystems.orion.web.uievent.AuthorizeUserRoleWindowEvent;
-import co.com.binariasystems.orion.web.uievent.CreateModuleWindowEvent;
 import co.com.binariasystems.orion.web.utils.OrionWebConstants;
 import co.com.binariasystems.orion.web.utils.RoleSelectableColumnGenerator;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -56,8 +55,8 @@ public class AuthorizeUserRolesWindow extends Window {
 	private TextFieldBuilder userNameTxt;
 	private Table applicationTable;
 	private Table roleTable;
-	private BeanItemContainer<ApplicationDTO> applicationDS;
-	private BeanItemContainer<RoleDTO> roleDS;
+	private SortableBeanContainer<ApplicationDTO> applicationDS;
+	private SortableBeanContainer<RoleDTO> roleDS;
 	private ApplicationDTO lastSelectedApplication;
 	private List<RoleDTO> assignedRoles;
 	private UserDTO user;
@@ -87,8 +86,8 @@ public class AuthorizeUserRolesWindow extends Window {
 	}
 	
 	private void init(){
-		applicationDS = new BeanItemContainer<ApplicationDTO>(ApplicationDTO.class);
-		roleDS = new BeanItemContainer<RoleDTO>(RoleDTO.class);
+		applicationDS = new SortableBeanContainer<ApplicationDTO>(ApplicationDTO.class);
+		roleDS = new SortableBeanContainer<RoleDTO>(RoleDTO.class);
 		form = new FormPanel(2);
 		userNameTxt = new TextFieldBuilder();
 		applicationTable = new Table(null, applicationDS);
